@@ -126,6 +126,7 @@ export default function Navbar() {
         @media(max-width:768px){
           .nav-desktop{display:none!important}
           .nav-mobile{display:flex!important}
+          nav{padding:0 16px!important}
         }
       `}</style>
     </>

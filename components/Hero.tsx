@@ -16,8 +16,8 @@ export default function Hero() {
       alignItems: "center",
       justifyContent: "center",
       overflow: "hidden",
-      padding: "0 24px",
-      paddingTop: 100, /* account for announce bar + nav */
+      padding: "0 16px",
+      paddingTop: "clamp(80px, 12vw, 120px)",
     }}>
 
       {/* ── Cortex-style centered purple radial glow ── */}

@@ -44,7 +44,8 @@ export default function Partners() {
         </motion.div>
 
         {/* Partner cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 16, marginBottom: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 16, marginBottom: 16 }}
+        className="partners-grid">
           {PARTNERS.map((p, i) => (
             <motion.div
               key={p.name}
@@ -108,6 +109,12 @@ export default function Partners() {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media(max-width:768px){
+          .partners-grid{grid-template-columns:1fr!important}
+        }
+      `}</style>
     </section>
   );
 }

@@ -105,7 +105,8 @@ export default function Features() {
           borderRadius: 14,
           overflow: "hidden",
           border: "1px solid var(--border)",
-        }}>
+        }}
+        className="features-grid">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
@@ -137,6 +138,12 @@ export default function Features() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        @media(max-width:768px){
+          .features-grid{grid-template-columns:1fr!important}
+        }
+      `}</style>
     </section>
   );
 }

@@ -225,7 +225,13 @@ export default function Pipeline() {
         </motion.div>
 
         {/* Staggered Cortex-style cards */}
-        <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+        <div style={{
+          display: "flex",
+          gap: 14,
+          alignItems: "flex-start",
+          flexDirection: "column",
+        }}
+        className="pipeline-cards">
           {CARDS.map((card, i) => (
             <motion.div
               key={card.num}
@@ -284,6 +290,15 @@ export default function Pipeline() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        @media(min-width:1024px){
+          .pipeline-cards{flex-direction:row!important;align-items:flex-start!important}
+        }
+        @media(max-width:768px){
+          .pipeline-cards{padding:0 12px}
+        }
+      `}</style>
     </section>
   );
 }

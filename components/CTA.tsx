@@ -67,7 +67,8 @@ export default function CTA() {
               Join global enterprises and organisations that run their full talent lifecycle on Comuno.
             </p>
 
-            <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 32, flexDirection: "column", alignItems: "center" }}
+            className="cta-buttons">
               <a href="mailto:hello@easecruit.com" className="btn btn-purple" style={{ fontSize: 15, padding: "13px 30px" }}>
                 Book a live demo
               </a>
@@ -86,6 +87,12 @@ export default function CTA() {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media(min-width:768px){
+          .cta-buttons{flex-direction:row!important;align-items:center!important}
+        }
+      `}</style>
     </section>
   );
 }

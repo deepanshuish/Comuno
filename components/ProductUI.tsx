@@ -30,9 +30,9 @@ function ScreeningScreen() {
   const c = CANDIDATES[sel];
 
   return (
-    <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
+    <div style={{ display: "flex", height: "100%", overflow: "hidden", flexDirection: "column" }} className="screen-container">
       {/* Table panel */}
-      <div style={{ flex: "0 0 54%", borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ flex: "0 0 54%", borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", overflow: "hidden" }} className="table-panel">
         {/* toolbar */}
         <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, background: "var(--elevated)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 7, padding: "6px 12px" }}>
@@ -89,7 +89,7 @@ function ScreeningScreen() {
       </div>
 
       {/* Detail panel */}
-      <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
+      <div style={{ flex: 1, padding: "20px", overflowY: "auto" }} className="detail-panel">
         {/* header */}
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, paddingBottom: 18, borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 20 }}>
           <div style={{ width: 40, height: 40, borderRadius: 10, background: c.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: c.color, flexShrink: 0 }}>{c.avatar}</div>
@@ -526,6 +526,17 @@ export default function ProductUI() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        @media(max-width:1024px){
+          .screen-container{flex-direction:column!important}
+          .table-panel{flex:0 0 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.06)!important;max-height:250px!important}
+          .detail-panel{flex:1!important}
+        }
+        @media(max-width:768px){
+          .table-panel{max-height:300px!important}
+        }
+      `}</style>
     </section>
   );
 }
