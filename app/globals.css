@@ -1,26 +1,151 @@
 @import "tailwindcss";
 
+/* ─── Exact Cortex.io design tokens ────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds */
+  --bg:        #0c0d16;
+  --surface:   #13141f;
+  --elevated:  #1a1b28;
+  --overlay:   #1f2030;
+
+  /* Borders */
+  --border:    rgba(255, 255, 255, 0.08);
+  --border-md: rgba(255, 255, 255, 0.13);
+  --border-hi: rgba(255, 255, 255, 0.22);
+
+  /* Cortex purple — exact button color */
+  --purple:      #7059f0;
+  --purple-hi:   #8470f2;
+  --purple-lo:   #5e49d4;
+  --purple-dim:  rgba(112, 89, 240, 0.12);
+  --purple-glow: rgba(112, 89, 240, 0.22);
+
+  /* Cortex periwinkle — subtitle / tag text */
+  --periwinkle:  #8787d8;
+
+  /* Cortex announcement bar */
+  --announce-bg:   #eaeaf8;
+  --announce-text: #1a1a2e;
+
+  /* Semantic */
+  --green:  #22c55e;
+  --amber:  #f59e0b;
+  --red:    #ef4444;
+
+  /* Text hierarchy */
+  --t1: #ffffff;
+  --t2: rgba(255, 255, 255, 0.58);
+  --t3: rgba(255, 255, 255, 0.34);
+  --t4: rgba(255, 255, 255, 0.14);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ─── Reset ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
+
+::selection { background: rgba(112, 89, 240, 0.35); color: #fff; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--overlay); border-radius: 4px; }
+
+/* ─── Typography helpers ─────────────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--periwinkle);
+  letter-spacing: 0.01em;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple-hi);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 11px 22px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: none;
+  font-family: inherit;
+}
+
+/* Cortex primary — solid purple */
+.btn-purple {
+  background: #7059f0;
+  color: #fff;
+  border: 1px solid rgba(112,89,240,0.4);
+}
+.btn-purple:hover {
+  background: #8470f2;
+  box-shadow: 0 0 28px rgba(112,89,240,0.45);
+  transform: translateY(-1px);
+}
+
+/* Cortex ghost — border only */
+.btn-ghost {
+  background: transparent;
+  color: var(--t2);
+  border: 1px solid var(--border-md);
+}
+.btn-ghost:hover {
+  color: var(--t1);
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.04);
+}
+
+/* Nav outlined — white border (Cortex style) */
+.btn-nav {
+  background: transparent;
+  color: var(--t1);
+  border: 1px solid rgba(255,255,255,0.25);
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 8px;
+}
+.btn-nav:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* ─── Animations ─────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+@keyframes hero-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.06); }
+}
+
+.fade-up { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) both; }
