@@ -8,9 +8,12 @@ plus a natural-language Agent. **Google Gemini is the only AI engine.**
   - Middleware is now `proxy.ts`. Route/page `params` are **Promises** (`await params`).
   - `cookies()` / `headers()` are async.
 - TypeScript strict, Tailwind v4 (utility classes), lucide-react icons, React 19.
-- DB: libSQL (SQLite) via `lib/db.ts` helpers `all`, `one`, `run`, `insert`, `update`, `newId`, `parseJson`.
-  Schema lives in `lib/db.ts` (SCHEMA). If you need a new column/table, add it there with
-  `CREATE TABLE IF NOT EXISTS` (existing dev DBs: add a guarded `ALTER TABLE` is not needed — just delete `data/comuno.db`).
+- DB: Postgres (Supabase) via `lib/db.ts` helpers `all`, `one`, `run`, `insert`, `update`, `newId`, `parseJson`.
+  Write SQL with `?` placeholders; `toPg()` converts them and maps `datetime()/date()`, `LIKE`, `GROUP_CONCAT`,
+  `INSERT OR IGNORE` and `rowid` (see the header of `lib/db.ts`). Timestamps are UTC text 'YYYY-MM-DD HH:MM:SS'.
+  Schema lives in `lib/schema.ts`; add tables with `CREATE TABLE IF NOT EXISTS` and columns with
+  `ALTER TABLE … ADD COLUMN IF NOT EXISTS`, and enable RLS on new tables. Postgres is strict about `GROUP BY`:
+  group by the primary key of every joined table whose columns you select.
 - Every row has `workspace_id`; **every query must be scoped by workspace_id**.
 
 ## Server

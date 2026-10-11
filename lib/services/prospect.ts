@@ -1,9 +1,8 @@
 import "server-only";
 import { resolveMx } from "node:dns/promises";
-import type { InValue } from "@libsql/client";
 import { HttpError } from "../auth";
 import { withCredits } from "../credits";
-import { all, insert, one, parseJson, run, update } from "../db";
+import { all, insert, one, parseJson, run, update, type InValue } from "../db";
 import { generateJSON, generateText, sellerContext, type Source } from "../gemini";
 import type { Activity, Company, Contact, ContactStatus, EmailStatus, ICP, Workspace } from "../types";
 import { getCompany, getContact, logActivity, normalizeDomain, upsertCompany } from "./core";

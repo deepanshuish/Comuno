@@ -15,7 +15,7 @@
 ## Quick start
 
 ```bash
-cp .env.example .env.local   # add your GEMINI_API_KEY
+cp .env.example .env.local   # add GEMINI_API_KEY and your Supabase DATABASE_URL
 npm install
 npm run dev
 ```
@@ -23,6 +23,14 @@ npm run dev
 Open http://localhost:3000, click **Start for free**, then go to **Settings → Company profile** and use **Autofill with AI**.
 
 Get a Gemini key at https://aistudio.google.com/apikey. You can also set a key per workspace in **Settings → AI engine**.
+
+## Database (Supabase)
+
+Comuno stores everything in your Supabase project's Postgres database and connects to it from the server only.
+
+1. In Supabase, open your project → **Connect** → copy the **Transaction pooler** connection string.
+2. Put it in `.env.local` as `DATABASE_URL`, replacing `[YOUR-PASSWORD]` with your database password (Project Settings → Database to reset it).
+3. Start the app. Tables are created on first request. To create them by hand instead, run the SQL in `lib/schema.ts` in the Supabase SQL Editor.
 
 ## Configuration
 
@@ -32,7 +40,7 @@ Get a Gemini key at https://aistudio.google.com/apikey. You can also set a key p
 | `GEMINI_MODEL` | Default model. Defaults to `gemini-flash-latest`. |
 | `GEMINI_PRO_MODEL` | Model for heavier research. Defaults to `gemini-pro-latest`. |
 | `GEMINI_AGENT_MODEL` | Model that drives the Agent. Defaults to `GEMINI_MODEL`. |
-| `DATABASE_URL` / `DATABASE_AUTH_TOKEN` | libSQL database. Defaults to a local SQLite file at `data/comuno.db`. Use a [Turso](https://turso.tech) URL on serverless hosts. |
+| `DATABASE_URL` | Supabase Postgres connection string (Connect → Transaction pooler). The schema is created automatically on first run. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Default sending mailbox. Can be set per workspace in Settings. Without one, sending runs in **sandbox mode**: messages are recorded but not delivered. |
 | `CRON_SECRET` | Bearer token for `POST /api/cron/process`, the sequence scheduler. |
 
@@ -84,7 +92,7 @@ Comuno exposes its agent tools at `/api/mcp` (Streamable HTTP):
 
 - **Next.js 16** App Router, React 19, Tailwind CSS v4, TypeScript.
 - `lib/gemini.ts` is the Gemini engine: text, structured JSON (JSON Schema), Google Search grounding with sources, and function calling.
-- `lib/db.ts` is the libSQL/SQLite data layer; the schema is created automatically on first run.
+- `lib/db.ts` is the Postgres (Supabase) data layer via `pg`; `lib/schema.ts` is applied automatically on first run. Row Level Security is enabled on every table so Supabase's public Data API exposes nothing; the server connects directly.
 - `lib/services/*` holds the domain logic for each module (prospect, engage, crm, signals, agent). Route handlers in `app/api/*` stay thin.
 - `lib/services/agent-tools.ts` is the single tool registry shared by the in-app Agent and the MCP server.
 - `app/(platform)/*` holds the authenticated app; `app/page.tsx` is the marketing site.

@@ -1,253 +1,165 @@
 import "server-only";
-import { createClient, type Client, type InValue } from "@libsql/client";
+import { Pool, types, type PoolClient } from "pg";
 import { randomUUID } from "node:crypto";
-import { mkdirSync } from "node:fs";
+import { SCHEMA } from "./schema";
 
 /**
- * Database layer. Uses libSQL: a local SQLite file by default, or a hosted
- * Turso database when DATABASE_URL is a libsql:// URL (needed on serverless hosts).
+ * Database layer: Postgres (Supabase) via node-postgres, connected server-side
+ * with DATABASE_URL. Queries are written with `?` (or `:name`) placeholders;
+ * `toPg()` converts them, plus a few portable idioms, to Postgres SQL:
+ *
+ *   ?, :name             → $1, $2 …            (`? IS [NOT] NULL` gets an explicit ::text type)
+ *   datetime(v[, mod])   → sqlite_datetime(…)  (UTC 'YYYY-MM-DD HH:MM:SS' text; see schema.ts)
+ *   date(v[, mod])       → sqlite_date(…)
+ *   LIKE                 → ILIKE               (case-insensitive search)
+ *   GROUP_CONCAT(x, sep) → string_agg(x, sep)
+ *   INSERT OR IGNORE     → INSERT … ON CONFLICT DO NOTHING
+ *   rowid                → seq                 (BIGSERIAL insertion order)
  */
 
-const SCHEMA = `
-CREATE TABLE IF NOT EXISTS workspaces (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  company_name TEXT, company_website TEXT,
-  product_description TEXT, value_prop TEXT,
-  icp_json TEXT,
-  sender_name TEXT, sender_email TEXT, signature TEXT,
-  smtp_json TEXT,
-  gemini_api_key TEXT,
-  credits INTEGER NOT NULL DEFAULT 2000,
-  plan TEXT NOT NULL DEFAULT 'free',
-  tracking_key TEXT NOT NULL,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  name TEXT,
-  password_hash TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'owner',
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS sessions (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  expires_at TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS companies (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  domain TEXT, website TEXT, linkedin_url TEXT,
-  industry TEXT, size TEXT, location TEXT, description TEXT,
-  funding TEXT, tech_json TEXT, enrichment_json TEXT,
-  score INTEGER, score_reason TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_companies_ws ON companies(workspace_id);
-CREATE TABLE IF NOT EXISTS contacts (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  company_id TEXT,
-  first_name TEXT, last_name TEXT, title TEXT,
-  email TEXT, email_status TEXT NOT NULL DEFAULT 'unknown',
-  phone TEXT, linkedin_url TEXT, location TEXT,
-  seniority TEXT, department TEXT,
-  source TEXT, score INTEGER, score_reason TEXT,
-  status TEXT NOT NULL DEFAULT 'new',
-  tags TEXT, notes TEXT, enrichment_json TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_contacts_ws ON contacts(workspace_id);
-CREATE INDEX IF NOT EXISTS idx_contacts_company ON contacts(company_id);
-CREATE TABLE IF NOT EXISTS lists (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS list_members (
-  list_id TEXT NOT NULL,
-  contact_id TEXT NOT NULL,
-  PRIMARY KEY (list_id, contact_id)
-);
-CREATE TABLE IF NOT EXISTS sequences (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  goal TEXT,
-  status TEXT NOT NULL DEFAULT 'draft',
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS sequence_steps (
-  id TEXT PRIMARY KEY,
-  sequence_id TEXT NOT NULL,
-  position INTEGER NOT NULL,
-  type TEXT NOT NULL,
-  delay_days INTEGER NOT NULL DEFAULT 0,
-  subject TEXT, body TEXT,
-  ai_personalize INTEGER NOT NULL DEFAULT 1,
-  instructions TEXT
-);
-CREATE TABLE IF NOT EXISTS enrollments (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  sequence_id TEXT NOT NULL,
-  contact_id TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'active',
-  current_step INTEGER NOT NULL DEFAULT 0,
-  next_run_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  UNIQUE (sequence_id, contact_id)
-);
-CREATE TABLE IF NOT EXISTS messages (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  contact_id TEXT,
-  enrollment_id TEXT, step_id TEXT,
-  channel TEXT NOT NULL DEFAULT 'email',
-  direction TEXT NOT NULL DEFAULT 'out',
-  subject TEXT, body TEXT,
-  status TEXT NOT NULL DEFAULT 'draft',
-  sentiment TEXT,
-  thread_id TEXT,
-  opened_at TEXT, sent_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_messages_ws ON messages(workspace_id);
-CREATE TABLE IF NOT EXISTS tasks (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  contact_id TEXT, enrollment_id TEXT, step_id TEXT,
-  type TEXT NOT NULL DEFAULT 'todo',
-  title TEXT NOT NULL, body TEXT,
-  due_at TEXT,
-  status TEXT NOT NULL DEFAULT 'open',
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS calls (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  contact_id TEXT,
-  outcome TEXT, duration_sec INTEGER,
-  notes TEXT, summary TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS deals (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  company_id TEXT, contact_id TEXT,
-  name TEXT NOT NULL,
-  stage TEXT NOT NULL DEFAULT 'lead',
-  value REAL NOT NULL DEFAULT 0,
-  probability INTEGER,
-  close_date TEXT,
-  notes TEXT, ai_insight TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS activities (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  contact_id TEXT, company_id TEXT, deal_id TEXT,
-  type TEXT NOT NULL,
-  title TEXT NOT NULL, body TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_activities_ws ON activities(workspace_id);
-CREATE TABLE IF NOT EXISTS signals (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  company_id TEXT, contact_id TEXT,
-  type TEXT NOT NULL,
-  title TEXT NOT NULL, body TEXT, url TEXT,
-  score INTEGER,
-  seen INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS visits (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  visitor_id TEXT,
-  contact_id TEXT, company_id TEXT,
-  url TEXT, title TEXT, referrer TEXT,
-  ip TEXT, org TEXT, city TEXT, country TEXT, user_agent TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS agent_threads (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  user_id TEXT NOT NULL,
-  title TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS agent_messages (
-  id TEXT PRIMARY KEY,
-  thread_id TEXT NOT NULL,
-  role TEXT NOT NULL,
-  content_json TEXT NOT NULL,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS api_keys (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  prefix TEXT NOT NULL,
-  key_hash TEXT NOT NULL UNIQUE,
-  last_used_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-CREATE TABLE IF NOT EXISTS credit_ledger (
-  id TEXT PRIMARY KEY,
-  workspace_id TEXT NOT NULL,
-  amount INTEGER NOT NULL,
-  reason TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-`;
-
-const globalForDb = globalThis as unknown as { __db?: Client; __dbReady?: Promise<void> };
-
-function client(): Client {
-  if (!globalForDb.__db) {
-    const url = process.env.DATABASE_URL || "file:./data/comuno.db";
-    if (url.startsWith("file:")) mkdirSync("./data", { recursive: true });
-    globalForDb.__db = createClient({ url, authToken: process.env.DATABASE_AUTH_TOKEN });
-  }
-  return globalForDb.__db;
-}
-
-async function ready(): Promise<Client> {
-  const c = client();
-  if (!globalForDb.__dbReady) {
-    globalForDb.__dbReady = c.executeMultiple(SCHEMA).catch((e) => {
-      globalForDb.__dbReady = undefined;
-      throw e;
-    });
-  }
-  await globalForDb.__dbReady;
-  return c;
-}
-
+export type InValue = string | number | bigint | boolean | null | Uint8Array;
 export type Row = Record<string, unknown>;
 type Args = InValue[] | Record<string, InValue>;
 
-function clean(args?: Args): Args {
-  if (!args) return [];
-  if (Array.isArray(args)) return args.map((v) => (v === undefined ? null : v));
-  return Object.fromEntries(Object.entries(args).map(([k, v]) => [k, v === undefined ? null : v]));
+// Return COUNT/SUM (int8) and numeric aggregates as JS numbers, not strings.
+types.setTypeParser(20, (v) => Number(v));
+types.setTypeParser(1700, (v) => parseFloat(v));
+
+const globalForDb = globalThis as unknown as { __pg?: Pool; __pgReady?: Promise<void> };
+
+function pool(): Pool {
+  if (!globalForDb.__pg) {
+    const url = process.env.DATABASE_URL;
+    if (!url || !/^postgres(ql)?:\/\//.test(url)) {
+      throw new Error(
+        "DATABASE_URL is not set. Use your Supabase connection string (Project → Connect → Transaction pooler).",
+      );
+    }
+    const parsed = new URL(url);
+    const local = ["localhost", "127.0.0.1", "::1"].includes(parsed.hostname);
+    // Supabase requires TLS. Its certificate chain isn't in Node's default store, so verify
+    // only when DATABASE_SSL=verify (and provide the CA via NODE_EXTRA_CA_CERTS).
+    parsed.searchParams.delete("sslmode");
+    const ssl =
+      local || process.env.DATABASE_SSL === "disable" ? false : { rejectUnauthorized: process.env.DATABASE_SSL === "verify" };
+    globalForDb.__pg = new Pool({
+      connectionString: parsed.toString(),
+      ssl,
+      max: Number(process.env.DATABASE_POOL_MAX) || 5,
+      idleTimeoutMillis: 10_000,
+    });
+  }
+  return globalForDb.__pg;
+}
+
+async function ready(): Promise<Pool> {
+  const p = pool();
+  if (!globalForDb.__pgReady) {
+    globalForDb.__pgReady = migrate(p).catch((e) => {
+      globalForDb.__pgReady = undefined;
+      throw e;
+    });
+  }
+  await globalForDb.__pgReady;
+  return p;
+}
+
+/** Apply the schema once per process, serialized across instances with an advisory lock. */
+async function migrate(p: Pool) {
+  let c: PoolClient | undefined;
+  try {
+    c = await p.connect();
+    await c.query("BEGIN");
+    await c.query("SELECT pg_advisory_xact_lock(724113)");
+    await c.query(SCHEMA);
+    await c.query("COMMIT");
+  } catch (e) {
+    await c?.query("ROLLBACK").catch(() => {});
+    throw e;
+  } finally {
+    c?.release();
+  }
+}
+
+const cache = new Map<string, { text: string; names: string[] | null }>();
+
+/** Convert portable SQL (see header) to Postgres. Exported for tests. */
+export function toPg(sql: string, named: boolean): { text: string; names: string[] | null } {
+  const key = `${named ? "n" : "p"}:${sql}`;
+  const hit = cache.get(key);
+  if (hit) return hit;
+
+  let s = sql;
+  const ignore = /^\s*INSERT\s+OR\s+IGNORE\s+/i.test(s);
+  if (ignore) s = s.replace(/^\s*INSERT\s+OR\s+IGNORE\s+/i, "INSERT ").replace(/;?\s*$/, " ON CONFLICT DO NOTHING");
+  s = s
+    .replace(/\bdatetime\s*\(/gi, "sqlite_datetime(")
+    .replace(/\bdate\s*\(/gi, "sqlite_date(")
+    .replace(/\bGROUP_CONCAT\s*\(/gi, "string_agg(")
+    .replace(/\browid\b/gi, "seq")
+    .replace(/(?<!\bI)\bLIKE\b/g, "ILIKE")
+    .replace(/(?<!\bI)\blike\b/g, "ILIKE");
+
+  // Placeholders, skipping quoted literals/identifiers and :: casts.
+  let out = "";
+  let n = 0;
+  const names: string[] = [];
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === "'" || ch === '"') {
+      const end = s.indexOf(ch, i + 1);
+      const j = end < 0 ? s.length : end;
+      out += s.slice(i, j + 1);
+      i = j;
+      continue;
+    }
+    let ph: string | null = null;
+    if (!named && ch === "?") ph = `$${++n}`;
+    else if (named && ch === ":" && s[i - 1] !== ":" && s[i + 1] !== ":" && /[A-Za-z_]/.test(s[i + 1] || "")) {
+      const m = /^[A-Za-z_]\w*/.exec(s.slice(i + 1))!;
+      let idx = names.indexOf(m[0]);
+      if (idx < 0) idx = names.push(m[0]) - 1;
+      ph = `$${idx + 1}`;
+      i += m[0].length;
+    }
+    if (ph) {
+      // A bare parameter tested for NULL has no inferable type in Postgres.
+      if (/^\s+IS\s+(NOT\s+)?NULL\b/i.test(s.slice(i + 1))) ph += "::text";
+      out += ph;
+    } else out += ch;
+  }
+  const res = { text: out, names: named ? names : null };
+  if (cache.size > 2000) cache.clear();
+  cache.set(key, res);
+  return res;
+}
+
+function normalize(v: InValue | undefined): unknown {
+  if (v === undefined) return null;
+  if (typeof v === "boolean") return v ? 1 : 0; // columns are INTEGER flags
+  if (typeof v === "bigint") return v.toString();
+  return v;
+}
+
+async function exec(sql: string, args?: Args) {
+  const p = await ready();
+  const named = !!args && !Array.isArray(args);
+  const { text, names } = toPg(sql, named);
+  const values = named
+    ? names!.map((k) => normalize((args as Record<string, InValue>)[k]))
+    : ((args as InValue[] | undefined) || []).map(normalize);
+  try {
+    return await p.query(text, values);
+  } catch (e) {
+    const err = e as Error & { position?: string };
+    err.message = `${err.message} [SQL: ${text.replace(/\s+/g, " ").slice(0, 300)}]`;
+    throw err;
+  }
 }
 
 /** Run a query and return all rows as plain objects. */
 export async function all<T = Row>(sql: string, args?: Args): Promise<T[]> {
-  const c = await ready();
-  const res = await c.execute({ sql, args: clean(args) });
-  return res.rows.map((r) => ({ ...r })) as T[];
+  return (await exec(sql, args)).rows as T[];
 }
 
 /** Run a query and return the first row, or null. */
@@ -258,9 +170,7 @@ export async function one<T = Row>(sql: string, args?: Args): Promise<T | null> 
 
 /** Run a write statement. Returns the number of affected rows. */
 export async function run(sql: string, args?: Args): Promise<number> {
-  const c = await ready();
-  const res = await c.execute({ sql, args: clean(args) });
-  return res.rowsAffected;
+  return (await exec(sql, args)).rowCount ?? 0;
 }
 
 /** Insert a row from an object. Generates an id when absent. Returns the id. */

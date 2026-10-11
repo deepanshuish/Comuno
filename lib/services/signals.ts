@@ -648,7 +648,7 @@ export async function visitorsReport(workspaceId: string, days = 30) {
        GROUP_CONCAT(v.url, '\n') AS urls
      FROM visits v JOIN companies co ON co.id = v.company_id AND co.workspace_id = v.workspace_id
      WHERE v.workspace_id = ? AND datetime(v.created_at) >= datetime('now', ?)
-     GROUP BY v.company_id ORDER BY last_seen DESC LIMIT 200`,
+     GROUP BY v.company_id, co.id ORDER BY last_seen DESC LIMIT 200`,
     [workspaceId, since],
   );
   const people = await all<{
@@ -660,7 +660,7 @@ export async function visitorsReport(workspaceId: string, days = 30) {
      FROM visits v JOIN contacts c ON c.id = v.contact_id AND c.workspace_id = v.workspace_id
      LEFT JOIN companies co ON co.id = c.company_id
      WHERE v.workspace_id = ? AND datetime(v.created_at) >= datetime('now', ?)
-     GROUP BY v.contact_id ORDER BY last_seen DESC LIMIT 200`,
+     GROUP BY v.contact_id, c.id, co.id ORDER BY last_seen DESC LIMIT 200`,
     [workspaceId, since],
   );
   const recent = await all<{ id: string; url: string; title: string | null; referrer: string | null; created_at: string; org: string | null; city: string | null; country: string | null; company_name: string | null; contact_name: string | null; visitor_id: string }>(

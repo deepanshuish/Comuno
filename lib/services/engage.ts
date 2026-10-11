@@ -33,12 +33,12 @@ export async function ensureEngageSchema() {
   if (!g.__engageSchema) {
     g.__engageSchema = (async () => {
       const stmts = [
-        "ALTER TABLE messages ADD COLUMN delivery TEXT",
-        "ALTER TABLE messages ADD COLUMN error TEXT",
-        "ALTER TABLE messages ADD COLUMN clicked_at TEXT",
-        "ALTER TABLE messages ADD COLUMN provider_id TEXT",
-        "ALTER TABLE messages ADD COLUMN to_email TEXT",
-        "ALTER TABLE messages ADD COLUMN from_email TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS delivery TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS error TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS clicked_at TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS provider_id TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS to_email TEXT",
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS from_email TEXT",
         "CREATE INDEX IF NOT EXISTS idx_messages_contact ON messages(contact_id)",
         "CREATE INDEX IF NOT EXISTS idx_enrollments_due ON enrollments(status, next_run_at)",
         "CREATE INDEX IF NOT EXISTS idx_tasks_ws_status ON tasks(workspace_id, status)",
@@ -346,7 +346,7 @@ export async function listSequences(workspaceId: string): Promise<SequenceSummar
   return all<SequenceSummary>(
     `SELECT s.*,
        (SELECT COUNT(*) FROM sequence_steps st WHERE st.sequence_id = s.id) AS steps,
-       (SELECT GROUP_CONCAT(type) FROM (SELECT DISTINCT type FROM sequence_steps st WHERE st.sequence_id = s.id)) AS channels,
+       (SELECT GROUP_CONCAT(type, ',') FROM (SELECT DISTINCT type FROM sequence_steps st WHERE st.sequence_id = s.id) AS step_types) AS channels,
        (SELECT COUNT(*) FROM enrollments e WHERE e.sequence_id = s.id) AS enrolled,
        (SELECT COUNT(*) FROM enrollments e WHERE e.sequence_id = s.id AND e.status = 'active') AS active,
        (SELECT COUNT(*) FROM enrollments e WHERE e.sequence_id = s.id AND (e.current_step > 0 OR e.status = 'replied')) AS contacted,
