@@ -84,12 +84,12 @@ export default function Navbar() {
 
           {/* CTA */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }} className="nav-desktop">
-            <a href="#" style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.55)", textDecoration: "none", padding: "6px 12px", transition: "color 0.15s" }}
+            <a href="/login" style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.55)", textDecoration: "none", padding: "6px 12px", transition: "color 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.color = "#fff"}
               onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.55)"}>
               Log in
             </a>
-            <a href="#" className="btn btn-nav">Book a live demo →</a>
+            <a href="/signup" className="btn btn-nav">Start for free →</a>
           </div>
 
           {/* Mobile toggle */}
@@ -115,7 +115,8 @@ export default function Navbar() {
                     {l}
                   </a>
                 ))}
-                <a href="#" className="btn btn-purple" style={{ marginTop: 14 }}>Book a live demo</a>
+                <a href="/login" style={{ fontSize: 15, fontWeight: 500, color: "var(--t2)", textDecoration: "none", padding: "11px 0" }}>Log in</a>
+                <a href="/signup" className="btn btn-purple" style={{ marginTop: 14 }}>Start for free</a>
               </div>
             </motion.div>
           )}

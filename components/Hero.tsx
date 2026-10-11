@@ -100,7 +100,7 @@ export default function Hero() {
           transition={{ delay: 0.55, duration: 0.5 }}
           style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 72 }}
         >
-          <a href="#" className="btn btn-purple" style={{ fontSize: 15, padding: "13px 28px" }}>
+          <a href="/signup" className="btn btn-purple" style={{ fontSize: 15, padding: "13px 28px" }}>
             Book a live demo
           </a>
           <a href="#product" className="btn btn-ghost" style={{ fontSize: 15, padding: "13px 24px" }}>
