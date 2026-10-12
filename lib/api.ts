@@ -43,6 +43,11 @@ export function errorResponse(e: unknown) {
   const err = e as { status?: number; message?: string };
   console.error(e);
   // Surface Gemini API errors (bad key, quota) with a readable message.
+  // Database misconfiguration or outage: say so instead of a generic error.
+  const code = (e as { code?: string })?.code;
+  if (/DATABASE_URL/.test(err?.message || "") || ["ENOTFOUND", "ECONNREFUSED", "ETIMEDOUT", "28P01", "XX000", "3D000"].includes(code || "")) {
+    return Response.json({ error: "Database unavailable. Check DATABASE_URL in your deployment settings (see /api/health)." }, { status: 503 });
+  }
   if (err?.status === 429) {
     return Response.json(
       { error: "Gemini quota reached for this API key. Wait a minute and retry, or enable billing on the key in Google AI Studio." },
