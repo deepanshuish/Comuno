@@ -12,14 +12,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Comuno — AI-Powered Talent Intelligence",
-  description: "End-to-end recruitment: AI resume screening, intelligent interviews, seamless onboarding & training. By Easecruit Technologies.",
+  title: "Comuno | AI Sales Platform for Outbound Sales & Prospecting",
+  description: "The AI-native outbound sales platform. Use AI agents to find, qualify and engage high-intent customers. Powered by Google Gemini.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${serif.variable}`}>
-      <body style={{ background: '#080a0f' }}>{children}</body>
+      <body style={{ background: '#f6f5f1' }}>{children}</body>
     </html>
   );
 }
