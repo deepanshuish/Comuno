@@ -7,7 +7,8 @@ export const dynamic = "force-dynamic";
  * whether the database is reachable. Never returns secret values.
  */
 export async function GET() {
-  const url = process.env.DATABASE_URL || "";
+  const raw = process.env.DATABASE_URL || "";
+  const url = raw.trim().replace(/^["']|["']$/g, "");
   let parsed: URL | null = null;
   try {
     parsed = url ? new URL(url) : null;
@@ -16,6 +17,8 @@ export async function GET() {
   }
   const database: Record<string, unknown> = {
     configured: !!url,
+    // Leading/trailing spaces or quotes in the env value (tolerated, but worth cleaning up).
+    has_extra_whitespace_or_quotes: raw !== url,
     valid_url: !!parsed && /^postgres(ql)?:$/.test(parsed.protocol),
     host: parsed?.hostname || null,
     port: parsed?.port || null,

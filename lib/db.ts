@@ -29,7 +29,8 @@ const globalForDb = globalThis as unknown as { __pg?: Pool; __pgReady?: Promise<
 
 function pool(): Pool {
   if (!globalForDb.__pg) {
-    const url = process.env.DATABASE_URL;
+    // Tolerate whitespace/newlines or surrounding quotes picked up when pasting into a host's env UI.
+    const url = process.env.DATABASE_URL?.trim().replace(/^["']|["']$/g, "");
     if (!url || !/^postgres(ql)?:\/\//.test(url)) {
       throw new Error(
         "DATABASE_URL is not set. Use your Supabase connection string (Project → Connect → Transaction pooler).",
