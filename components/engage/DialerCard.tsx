@@ -141,7 +141,7 @@ export default function DialerCard({
             <a
               href={`tel:${(c.phone || "").replace(/[^\d+]/g, "")}`}
               onClick={startCall}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 text-[13px] font-medium text-white hover:bg-emerald-500"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500"
             >
               <Phone className="size-3.5" /> Call
             </a>
@@ -150,8 +150,8 @@ export default function DialerCard({
               End call
             </Button>
           )}
-          <span className={cx("font-mono text-sm tabular-nums", onCall ? "text-emerald-700" : "text-zinc-400")}>
-            {onCall && <span className="mr-1.5 inline-block size-2 animate-pulse rounded-full bg-emerald-500" />}
+          <span className={cx("font-mono text-sm tabular-nums", onCall ? "text-brand-700" : "text-zinc-400")}>
+            {onCall && <span className="mr-1.5 inline-block size-2 animate-pulse rounded-full bg-brand-500" />}
             {fmt(elapsed)}
           </span>
           {!onCall && elapsed === 0 && (
@@ -230,9 +230,9 @@ export default function DialerCard({
             <Field label="Notes">
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={5} placeholder="Pain points, current tools, timeline, who else is involved…" />
             </Field>
-            <div className="rounded-lg border border-violet-100 bg-violet-50/40 p-3">
+            <div className="rounded-lg border border-brand-100 bg-brand-50/40 p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
-                <span className="text-xs font-medium text-violet-900">Call summary</span>
+                <span className="text-xs font-medium text-brand-900">Call summary</span>
                 <Button size="sm" variant="ai" loading={busy === "summary"} disabled={!notes.trim()} onClick={summarize}>
                   Summarize with AI
                 </Button>
@@ -242,7 +242,7 @@ export default function DialerCard({
                 <ul className="mt-2 space-y-1 text-[13px] text-zinc-700">
                   {nextSteps.map((s, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="mt-[7px] size-1 shrink-0 rounded-full bg-violet-500" />
+                      <span className="mt-[7px] size-1 shrink-0 rounded-full bg-brand-500" />
                       {s}
                     </li>
                   ))}

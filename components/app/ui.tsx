@@ -10,13 +10,13 @@ export function cx(...c: (string | false | null | undefined)[]) {
 
 type BtnVariant = "primary" | "secondary" | "ghost" | "danger" | "ai";
 const btnBase =
-  "inline-flex items-center justify-center gap-1.5 rounded-lg text-[13px] font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500";
+  "inline-flex items-center justify-center gap-1.5 rounded-lg text-[13px] font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500";
 const btnVariants: Record<BtnVariant, string> = {
   primary: "bg-zinc-900 text-white hover:bg-zinc-700",
   secondary: "bg-white text-zinc-800 border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300",
   ghost: "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
   danger: "bg-white text-red-600 border border-red-200 hover:bg-red-50",
-  ai: "bg-violet-600 text-white hover:bg-violet-500",
+  ai: "bg-brand-600 text-white hover:bg-brand-500",
 };
 const btnSizes = { sm: "h-7 px-2.5", md: "h-9 px-3.5", lg: "h-11 px-5 text-sm" };
 
@@ -70,7 +70,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="font-serif text-[28px] leading-tight tracking-tight text-zinc-900">{title}</h1>
+        <h1 className="font-display font-semibold text-[28px] leading-tight tracking-tight text-zinc-900">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -79,7 +79,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 }
 
 const inputCls =
-  "w-full rounded-lg border border-zinc-200 bg-white px-3 text-[13px] text-zinc-900 placeholder:text-zinc-400 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100";
+  "w-full rounded-lg border border-zinc-200 bg-white px-3 text-[13px] text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100";
 
 export function Input({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...rest} className={cx(inputCls, "h-9", className)} />;
@@ -109,11 +109,11 @@ export function Field({ label, hint, children, className }: { label: string; hin
 
 const badgeTones = {
   zinc: "bg-zinc-100 text-zinc-700",
-  violet: "bg-violet-50 text-violet-700",
-  green: "bg-emerald-50 text-emerald-700",
-  amber: "bg-amber-50 text-amber-700",
+  violet: "bg-brand-50 text-brand-700",
+  green: "bg-brand-50 text-brand-700",
+  amber: "bg-zinc-50 text-zinc-700",
   red: "bg-red-50 text-red-700",
-  blue: "bg-sky-50 text-sky-700",
+  blue: "bg-zinc-50 text-zinc-700",
 };
 export type Tone = keyof typeof badgeTones;
 
@@ -289,12 +289,8 @@ export function Avatar({ name, className }: { name: string; className?: string }
     .slice(0, 2)
     .map((s) => s[0]?.toUpperCase())
     .join("");
-  const hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
   return (
-    <span
-      className={cx("inline-flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold", className)}
-      style={{ background: `hsl(${hue} 70% 94%)`, color: `hsl(${hue} 45% 32%)` }}
-    >
+    <span className={cx("inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-[11px] font-semibold text-zinc-600 ring-1 ring-zinc-200", className)}>
       {initials || "?"}
     </span>
   );

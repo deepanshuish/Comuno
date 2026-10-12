@@ -44,7 +44,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-[28px] leading-tight tracking-tight text-zinc-900">
+        <h1 className="font-display font-semibold text-[28px] leading-tight tracking-tight text-zinc-900">
           {greeting()}, {first}
         </h1>
         <p className="mt-1 text-sm text-zinc-500">
@@ -118,14 +118,14 @@ export default function DashboardPage() {
             <CardHeader title={allDone ? "You're all set up" : "Getting started"} subtitle={`${done} of ${data.checklist.length} complete`} />
             <div className="px-5 pt-3">
               <div className="h-1.5 rounded-full bg-zinc-100">
-                <div className="h-1.5 rounded-full bg-violet-500 transition-[width]" style={{ width: `${(done / data.checklist.length) * 100}%` }} />
+                <div className="h-1.5 rounded-full bg-brand-500 transition-[width]" style={{ width: `${(done / data.checklist.length) * 100}%` }} />
               </div>
             </div>
             <ul className="p-2">
               {data.checklist.map((c) => (
                 <li key={c.id}>
                   <Link href={c.href} className="group flex gap-3 rounded-lg px-3 py-2.5 hover:bg-zinc-50">
-                    {c.done ? <CircleCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" /> : <Circle className="mt-0.5 size-4 shrink-0 text-zinc-300" />}
+                    {c.done ? <CircleCheck className="mt-0.5 size-4 shrink-0 text-brand-500" /> : <Circle className="mt-0.5 size-4 shrink-0 text-zinc-300" />}
                     <div className="min-w-0 flex-1">
                       <div className={cx("text-[13px] font-medium", c.done ? "text-zinc-400 line-through" : "text-zinc-900")}>{c.label}</div>
                       {!c.done && <div className="text-xs text-zinc-500">{c.body}</div>}
@@ -186,7 +186,7 @@ function PromptBox() {
         }}
         className="flex items-end gap-2"
       >
-        <Bot className="mb-2 size-5 shrink-0 text-violet-600" />
+        <Bot className="mb-2 size-5 shrink-0 text-brand-600" />
         <textarea
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -205,7 +205,7 @@ function PromptBox() {
           type="submit"
           disabled={!q.trim()}
           aria-label="Send to agent"
-          className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-violet-600 text-white transition-colors hover:bg-violet-500 disabled:opacity-40"
+          className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-white transition-colors hover:bg-brand-500 disabled:opacity-40"
         >
           <ArrowUp className="size-4" />
         </button>
@@ -215,7 +215,7 @@ function PromptBox() {
           <button
             key={s}
             onClick={() => go(s)}
-            className="rounded-full border border-zinc-200 px-2.5 py-1 text-left text-xs text-zinc-600 transition-colors hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+            className="rounded-full border border-zinc-200 px-2.5 py-1 text-left text-xs text-zinc-600 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
           >
             {s}
           </button>

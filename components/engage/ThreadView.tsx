@@ -121,7 +121,7 @@ function MessageBubble({ m, onChanged }: { m: EngageMessage; onChanged: () => vo
       <div
         className={cx(
           "w-full max-w-[640px] rounded-xl border px-4 py-3",
-          out ? "border-zinc-200 bg-white" : "border-violet-200 bg-violet-50/40",
+          out ? "border-zinc-200 bg-white" : "border-brand-200 bg-brand-50/40",
           m.status === "failed" && "border-red-200 bg-red-50/40",
         )}
       >
@@ -155,7 +155,7 @@ function MessageBubble({ m, onChanged }: { m: EngageMessage; onChanged: () => vo
         <div className="whitespace-pre-wrap break-words text-[13px] leading-relaxed text-zinc-700">{m.body}</div>
         {m.error && <div className="mt-2 text-xs text-red-600">{m.error}</div>}
         {!out && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-violet-100 pt-2.5">
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-brand-100 pt-2.5">
             <Button size="sm" variant="ai" loading={busy} onClick={classify}>
               {m.sentiment ? "Re-classify" : "Classify with AI"}
             </Button>
@@ -167,7 +167,7 @@ function MessageBubble({ m, onChanged }: { m: EngageMessage; onChanged: () => vo
                 </option>
               ))}
             </Select>
-            {aiSummary && <span className="text-xs text-violet-700">{aiSummary}</span>}
+            {aiSummary && <span className="text-xs text-brand-700">{aiSummary}</span>}
           </div>
         )}
         {err && (
@@ -268,7 +268,7 @@ function LogReplyBox({ contactId, onSaved }: { contactId: string; onSaved: () =>
       <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={4} placeholder="Paste their reply here…" />
       <ErrorNote error={error} />
       {result && (
-        <div className={cx("rounded-lg border px-3 py-2 text-[13px]", result.tone === "ok" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-900")}>
+        <div className={cx("rounded-lg border px-3 py-2 text-[13px]", result.tone === "ok" ? "border-brand-200 bg-brand-50 text-brand-800" : "border-zinc-200 bg-zinc-50 text-zinc-900")}>
           {result.text}
         </div>
       )}

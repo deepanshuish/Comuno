@@ -76,7 +76,7 @@ function Companies() {
         subtitle="Target accounts — enrich firmographics, research priorities and find the right people."
         actions={
           <>
-            <Link href="/prospect?mode=companies" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 text-[13px] font-medium text-white hover:bg-violet-500">
+            <Link href="/prospect?mode=companies" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500">
               <Search className="size-3.5" /> Find accounts
             </Link>
             <Button variant="primary" icon={<Plus className="size-3.5" />} onClick={() => setAddOpen(true)}>
@@ -140,7 +140,7 @@ function Companies() {
             body={q || minScore ? "Try a different search." : "Discover target accounts with AI, or they'll appear here as you add people."}
             action={
               !q && !minScore ? (
-                <Link href="/prospect?mode=companies" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 text-[13px] font-medium text-white hover:bg-violet-500">
+                <Link href="/prospect?mode=companies" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500">
                   <Search className="size-3.5" /> Find accounts with AI
                 </Link>
               ) : undefined
@@ -179,7 +179,7 @@ function Companies() {
               </thead>
               <tbody>
                 {companies.map((c) => (
-                  <tr key={c.id} className={sel.has(c.id) ? "cursor-pointer bg-violet-50/40" : "cursor-pointer hover:bg-zinc-50/70"} onClick={() => setOpenId(c.id)}>
+                  <tr key={c.id} className={sel.has(c.id) ? "cursor-pointer bg-brand-50/40" : "cursor-pointer hover:bg-zinc-50/70"} onClick={() => setOpenId(c.id)}>
                     <Td>
                       <Checkbox
                         label={`Select ${c.name}`}
@@ -208,7 +208,7 @@ function Companies() {
                     <Td className="hidden max-w-[180px] truncate lg:table-cell">{c.location || <span className="text-zinc-400">—</span>}</Td>
                     <Td>
                       {c.people_count > 0 ? (
-                        <Link href={`/contacts?companyId=${c.id}`} onClick={(e) => e.stopPropagation()} className="tabular-nums text-violet-700 hover:underline">
+                        <Link href={`/contacts?companyId=${c.id}`} onClick={(e) => e.stopPropagation()} className="tabular-nums text-brand-700 hover:underline">
                           {c.people_count}
                         </Link>
                       ) : (

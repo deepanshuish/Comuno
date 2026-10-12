@@ -9,10 +9,10 @@ import { CopyButton } from "./shared";
 import { formatWhen, parseDbDate, type TaskRow } from "./types";
 
 const TYPE_META: Record<Task["type"], { icon: LucideIcon; label: string; tone: string }> = {
-  linkedin: { icon: MessageSquare, label: "LinkedIn", tone: "bg-indigo-50 text-indigo-700 ring-indigo-100" },
-  call: { icon: Phone, label: "Call", tone: "bg-emerald-50 text-emerald-700 ring-emerald-100" },
-  todo: { icon: CheckSquare, label: "To-do", tone: "bg-amber-50 text-amber-700 ring-amber-100" },
-  email: { icon: Mail, label: "Email", tone: "bg-sky-50 text-sky-700 ring-sky-100" },
+  linkedin: { icon: MessageSquare, label: "LinkedIn", tone: "bg-brand-50 text-brand-700 ring-brand-100" },
+  call: { icon: Phone, label: "Call", tone: "bg-brand-50 text-brand-700 ring-brand-100" },
+  todo: { icon: CheckSquare, label: "To-do", tone: "bg-zinc-50 text-zinc-700 ring-zinc-100" },
+  email: { icon: Mail, label: "Email", tone: "bg-zinc-50 text-zinc-700 ring-zinc-100" },
 };
 
 export default function TaskCard({ task: t, onRemoved, onUpdated }: { task: TaskRow; onRemoved: () => void; onUpdated: (t: TaskRow) => void }) {

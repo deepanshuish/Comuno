@@ -34,7 +34,7 @@ function People() {
         subtitle="Every prospect in your workspace — search, enrich, verify, score and send to sequences."
         actions={
           <>
-            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 text-[13px] font-medium text-white hover:bg-violet-500">
+            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500">
               <Search className="size-3.5" /> Find leads
             </Link>
             <Button icon={<Upload className="size-3.5" />} onClick={() => setImportOpen(true)}>
@@ -53,7 +53,7 @@ function People() {
         initialOpenId={openId}
         emptyAction={
           <div className="flex flex-wrap justify-center gap-2">
-            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 text-[13px] font-medium text-white hover:bg-violet-500">
+            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500">
               <Search className="size-3.5" /> Find leads with AI
             </Link>
             <Button icon={<Upload className="size-3.5" />} onClick={() => setImportOpen(true)}>

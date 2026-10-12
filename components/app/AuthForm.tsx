@@ -32,7 +32,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
             <Logo size={26} />
             <span className="text-base font-semibold tracking-tight">comuno</span>
           </Link>
-          <h1 className="font-serif text-[34px] leading-tight tracking-tight">
+          <h1 className="font-display font-semibold text-[34px] leading-tight tracking-tight">
             {mode === "login" ? "Welcome back" : "Build pipeline with AI agents"}
           </h1>
           <p className="mt-2 text-sm text-zinc-500">
@@ -89,7 +89,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
       <div className="hidden flex-1 flex-col justify-between border-l border-zinc-200 bg-zinc-900 p-12 text-zinc-100 lg:flex">
         <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Comuno · AI-native outbound</div>
         <div>
-          <p className="font-serif text-[40px] leading-[1.1] tracking-tight">
+          <p className="font-display font-semibold text-[40px] leading-[1.1] tracking-tight">
             Find, qualify and engage high-intent buyers, with AI agents doing the busywork.
           </p>
           <ul className="mt-8 space-y-2 text-sm text-zinc-400">

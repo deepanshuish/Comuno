@@ -75,7 +75,7 @@ export default function DialerPage() {
                 onClick={() => setCurrentId(c.id)}
                 className={cx(
                   "flex w-full items-center gap-2.5 border-b border-zinc-100 px-4 py-2.5 text-left last:border-0",
-                  current?.id === c.id ? "bg-violet-50/60" : "hover:bg-zinc-50",
+                  current?.id === c.id ? "bg-brand-50/60" : "hover:bg-zinc-50",
                   skipped.has(c.id) && "opacity-50",
                 )}
               >

@@ -268,7 +268,7 @@ export default function VisitorsPage() {
                         <span className="shrink-0 tabular-nums text-zinc-900">{p.views}</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-zinc-100">
-                        <div className="h-1.5 rounded-full bg-violet-500" style={{ width: `${Math.max(2, (p.views / max) * 100)}%` }} />
+                        <div className="h-1.5 rounded-full bg-brand-500" style={{ width: `${Math.max(2, (p.views / max) * 100)}%` }} />
                       </div>
                     </li>
                   );
@@ -312,7 +312,7 @@ function PageChips({ pages }: { pages: Page[] }) {
           title={p.high_intent ? "High-intent page" : undefined}
           className={cx(
             "inline-flex max-w-[180px] items-center gap-1 truncate rounded-md px-1.5 py-0.5 text-[11px]",
-            p.high_intent ? "bg-amber-50 font-medium text-amber-800" : "bg-zinc-100 text-zinc-600",
+            p.high_intent ? "bg-zinc-50 font-medium text-zinc-800" : "bg-zinc-100 text-zinc-600",
           )}
         >
           <span className="truncate">{p.path}</span>

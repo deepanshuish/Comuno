@@ -116,7 +116,7 @@ export default function ComposeModal({
           )}
         </Field>
         {contact && !contact.email && <ErrorNote error="This contact has no email address — add one in People first." />}
-        <div className="rounded-lg border border-violet-100 bg-violet-50/50 p-3">
+        <div className="rounded-lg border border-brand-100 bg-brand-50/50 p-3">
           <div className="flex flex-col gap-2 sm:flex-row">
             <Input
               value={goal}
@@ -129,7 +129,7 @@ export default function ComposeModal({
               {body ? "Redraft with AI" : "Draft with AI"}
             </Button>
           </div>
-          <p className="mt-1.5 text-xs text-violet-700/80">Uses the prospect’s profile, company research, signals and past conversation.</p>
+          <p className="mt-1.5 text-xs text-brand-700/80">Uses the prospect’s profile, company research, signals and past conversation.</p>
         </div>
         <Field label="Subject">
           <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" />

@@ -65,7 +65,7 @@ export default function ListDetailPage() {
         fixedListId={id}
         emptyAction={
           <div className="flex flex-wrap justify-center gap-2">
-            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 text-[13px] font-medium text-white hover:bg-violet-500">
+            <Link href="/prospect" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 text-[13px] font-medium text-white hover:bg-brand-500">
               Find leads
             </Link>
             <Link href="/contacts" className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3.5 text-[13px] font-medium text-zinc-800 hover:bg-zinc-50">

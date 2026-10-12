@@ -83,7 +83,7 @@ export default function SignalsPage() {
               <FilterChip key={f} active={type === f} onClick={() => setType(f)} label={SIGNAL_META[f].label} count={counts[f]?.total ?? 0} unseen={counts[f]?.unseen ?? 0} />
             ))}
             <label className="ml-auto inline-flex cursor-pointer items-center gap-2 text-xs text-zinc-600">
-              <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} className="size-3.5 accent-violet-600" />
+              <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} className="size-3.5 accent-brand-600" />
               New only
             </label>
           </div>
@@ -167,7 +167,7 @@ function FilterChip({ active, onClick, label, count, unseen }: { active: boolean
     >
       {label}
       <span className={cx("tabular-nums", active ? "text-zinc-300" : "text-zinc-400")}>{count}</span>
-      {unseen > 0 && <span className="size-1.5 rounded-full bg-violet-500" title={`${unseen} new`} />}
+      {unseen > 0 && <span className="size-1.5 rounded-full bg-brand-500" title={`${unseen} new`} />}
     </button>
   );
 }
@@ -310,7 +310,7 @@ function JobChanges({ onDone }: { onDone: () => void }) {
               {result.results.map((r, i) => (
                 <li key={i} className="flex justify-between gap-2">
                   <span className="truncate text-zinc-700">{r.name}</span>
-                  <span className={cx("shrink-0", r.status === "changed" ? "font-medium text-amber-700" : r.status === "error" ? "text-red-600" : "text-zinc-500")}>
+                  <span className={cx("shrink-0", r.status === "changed" ? "font-medium text-zinc-700" : r.status === "error" ? "text-red-600" : "text-zinc-500")}>
                     {r.status === "same" ? "still there" : r.status}
                   </span>
                 </li>

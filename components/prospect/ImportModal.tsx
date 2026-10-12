@@ -146,7 +146,7 @@ export function ImportModal({ open, onClose, onImported }: { open: boolean; onCl
             }}
             className={cx(
               "flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-12 text-center transition-colors",
-              drag ? "border-violet-400 bg-violet-50" : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50",
+              drag ? "border-brand-400 bg-brand-50" : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50",
             )}
           >
             <FileUp className="mb-2 size-6 text-zinc-400" />

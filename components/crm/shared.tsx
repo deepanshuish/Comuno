@@ -28,13 +28,14 @@ export type PipelineSummary = {
 
 /** Stage accent (a dot / bar beside text — text itself stays neutral). */
 export const STAGE_COLOR: Record<DealStage, string> = {
-  lead: "#a1a1aa",
-  qualified: "#0ea5e9",
-  meeting: "#8b5cf6",
-  proposal: "#f59e0b",
-  negotiation: "#f97316",
-  won: "#10b981",
-  lost: "#f87171",
+  // One-hue ramp: deals get greener as they progress; lost is neutral.
+  lead: "#d4d4d8",
+  qualified: "#a6f4c5",
+  meeting: "#6ce9a6",
+  proposal: "#32d583",
+  negotiation: "#039855",
+  won: "#05603a",
+  lost: "#a1a1aa",
 };
 
 export function stageLabel(s: string) {
@@ -108,7 +109,7 @@ export function ActivityList({ items, showContext, compact }: { items: ActivityR
             <span
               className={cx(
                 "relative z-[1] flex size-7 shrink-0 items-center justify-center rounded-full border bg-white",
-                a.type === "ai" ? "border-violet-200 text-violet-600" : "border-zinc-200 text-zinc-500",
+                a.type === "ai" ? "border-brand-200 text-brand-600" : "border-zinc-200 text-zinc-500",
               )}
             >
               <Icon className="size-3.5" />
@@ -134,7 +135,7 @@ const linkBtnVariants = {
   primary: "bg-zinc-900 text-white hover:bg-zinc-700",
   secondary: "bg-white text-zinc-800 border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300",
   ghost: "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
-  ai: "bg-violet-600 text-white hover:bg-violet-500",
+  ai: "bg-brand-600 text-white hover:bg-brand-500",
 };
 
 /** A Next.js Link styled like the ui.tsx Button (avoids nesting <button> in <a>). */
@@ -160,7 +161,7 @@ export function ButtonLink({
       href={href}
       title={title}
       className={cx(
-        "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-[13px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500",
+        "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-[13px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500",
         linkBtnVariants[variant],
         size === "sm" ? "h-7 px-2.5" : "h-9 px-3.5",
         className,

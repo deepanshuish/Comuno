@@ -107,7 +107,7 @@ export default function SequencesPage() {
                   <Td className="text-right tabular-nums">{s.sent}</Td>
                   <Td className="text-right tabular-nums">{pct(s.opened, s.sent)}</Td>
                   <Td className="text-right tabular-nums">{s.replied}</Td>
-                  <Td className={cx("text-right font-medium tabular-nums", s.replied ? "text-emerald-700" : "")}>{pct(s.replied, s.contacted)}</Td>
+                  <Td className={cx("text-right font-medium tabular-nums", s.replied ? "text-brand-700" : "")}>{pct(s.replied, s.contacted)}</Td>
                 </tr>
               ))}
             </tbody>

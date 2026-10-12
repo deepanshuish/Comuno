@@ -77,7 +77,7 @@ export default function Sidebar({ user, workspace }: { user: { name: string | nu
                     active ? "bg-white font-medium text-zinc-900 shadow-sm ring-1 ring-zinc-200" : "text-zinc-600 hover:bg-zinc-200/50 hover:text-zinc-900",
                   )}
                 >
-                  <item.icon className={cx("size-4", item.href === "/agent" ? "text-violet-600" : active ? "text-zinc-900" : "text-zinc-400")} />
+                  <item.icon className={cx("size-4", item.href === "/agent" ? "text-brand-600" : active ? "text-zinc-900" : "text-zinc-400")} />
                   {item.label}
                 </Link>
               );
@@ -87,7 +87,7 @@ export default function Sidebar({ user, workspace }: { user: { name: string | nu
       </div>
       <div className="space-y-1 border-t border-zinc-200 p-2.5">
         <Link href="/settings?tab=billing" className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[12px] text-zinc-600 hover:bg-zinc-200/50">
-          <Coins className="size-3.5 text-amber-500" />
+          <Coins className="size-3.5 text-zinc-500" />
           <span className="tabular-nums">{workspace.credits.toLocaleString()} credits</span>
           <span className="ml-auto rounded bg-zinc-200/70 px-1.5 text-[10px] font-medium uppercase text-zinc-600">{workspace.plan}</span>
         </Link>

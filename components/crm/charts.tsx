@@ -4,7 +4,7 @@ import { cx } from "@/components/app/ui";
 
 /* Lightweight, dependency-free charts. Marks carry color; all text stays in neutral ink. */
 
-export const SERIES = { a: "#8b5cf6", b: "#f59e0b" };
+export const SERIES = { a: "#039855", b: "#a1a1aa" };
 
 function niceMax(v: number) {
   if (v <= 4) return 4;

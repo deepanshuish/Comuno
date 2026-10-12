@@ -92,7 +92,7 @@ export default function SequencePage() {
         </div>
       )}
       <ErrorNote error={actionError} />
-      {notice && <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] text-emerald-800">{notice}</div>}
+      {notice && <div className="mb-4 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-[13px] text-brand-800">{notice}</div>}
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <Stat label="Enrolled" value={stats.enrolled} />

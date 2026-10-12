@@ -230,10 +230,10 @@ function Agent() {
               <Loading />
             ) : events.length === 0 && !busy ? (
               <div className="pt-[8vh]">
-                <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-medium text-violet-700">
+                <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-medium text-brand-700">
                   <Bot className="size-3.5" /> Comuno Agent · Gemini
                 </div>
-                <h1 className="font-serif text-[38px] leading-[1.1] tracking-tight text-zinc-900">What should we work on?</h1>
+                <h1 className="font-display font-semibold text-[38px] leading-[1.1] tracking-tight text-zinc-900">What should we work on?</h1>
                 <p className="mt-2 max-w-xl text-sm text-zinc-500">
                   Ask in plain English. The agent prospects with live web search, enriches and scores leads, writes outreach, builds sequences, and manages your pipeline.
                 </p>
@@ -244,7 +244,7 @@ function Agent() {
                       onClick={() => send(s.text)}
                       className="flex gap-3 rounded-xl border border-zinc-200 bg-white p-3.5 text-left text-[13px] text-zinc-700 transition hover:border-zinc-300 hover:shadow-sm"
                     >
-                      <s.icon className="mt-0.5 size-4 shrink-0 text-violet-600" />
+                      <s.icon className="mt-0.5 size-4 shrink-0 text-brand-600" />
                       {s.text}
                     </button>
                   ))}
@@ -262,7 +262,7 @@ function Agent() {
                   if (e.kind === "assistant")
                     return (
                       <div key={e.id} className="flex gap-3">
-                        <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-700">
+                        <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
                           <Bot className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -279,7 +279,7 @@ function Agent() {
                   if (e.kind === "approval") return <ApprovalCard key={e.id} e={e} onResolve={resolve} />;
                   if (e.kind === "error")
                     return (
-                      <div key={e.id} className="text-[13px] text-amber-700">
+                      <div key={e.id} className="text-[13px] text-zinc-700">
                         {e.text}
                       </div>
                     );
@@ -301,7 +301,7 @@ function Agent() {
         {/* Composer */}
         <div className="border-t border-zinc-200 bg-[#fbfbfa] px-4 py-3 sm:px-6">
           <form
-            className="mx-auto flex max-w-3xl items-end gap-2 rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm focus-within:border-violet-300 focus-within:ring-2 focus-within:ring-violet-100"
+            className="mx-auto flex max-w-3xl items-end gap-2 rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm focus-within:border-brand-300 focus-within:ring-2 focus-within:ring-brand-100"
             onSubmit={(e) => {
               e.preventDefault();
               send(input);
@@ -348,7 +348,7 @@ function ToolChip({ name, args, result, running }: { name: string; args: Record<
           result && !result.ok ? "border-red-200 bg-red-50 text-red-700" : "border-zinc-200 bg-white text-zinc-600",
         )}
       >
-        {running ? <Loader2 className="size-3 animate-spin" /> : result?.ok ? <Check className="size-3 text-emerald-600" /> : result ? <X className="size-3" /> : <Wrench className="size-3" />}
+        {running ? <Loader2 className="size-3 animate-spin" /> : result?.ok ? <Check className="size-3 text-brand-600" /> : result ? <X className="size-3" /> : <Wrench className="size-3" />}
         <span className="font-medium">{TOOL_LABELS[name] || name}</span>
         {summary && <span className="truncate text-zinc-400">· {summary}</span>}
         <ChevronRight className={cx("size-3 shrink-0 transition", open && "rotate-90")} />
@@ -371,12 +371,12 @@ function ApprovalCard({ e, onResolve }: { e: Extract<Event, { kind: "approval" }
   };
   const a = e.args as { subject?: string; body?: string; contact_id?: string; contact_ids?: string[]; sequence_id?: string };
   return (
-    <div className="ml-10 rounded-xl border border-amber-200 bg-amber-50/50">
-      <div className="flex items-center justify-between border-b border-amber-100 px-4 py-2.5">
-        <div className="text-[13px] font-semibold text-amber-900">
+    <div className="ml-10 rounded-xl border border-zinc-200 bg-zinc-50/50">
+      <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2.5">
+        <div className="text-[13px] font-semibold text-zinc-900">
           {e.tool === "send_email" ? "Approve email send" : e.tool === "enroll_in_sequence" ? `Approve enrolling ${a.contact_ids?.length || 0} people` : `Approve ${e.tool}`}
         </div>
-        <span className={cx("text-[11px] font-medium", e.status === "approved" ? "text-emerald-700" : e.status === "rejected" ? "text-zinc-500" : "text-amber-700")}>
+        <span className={cx("text-[11px] font-medium", e.status === "approved" ? "text-brand-700" : e.status === "rejected" ? "text-zinc-500" : "text-zinc-700")}>
           {e.status === "pending" ? "Waiting for you" : e.status === "approved" ? (e.error ? "Failed" : "Approved") : "Rejected"}
         </span>
       </div>
@@ -393,7 +393,7 @@ function ApprovalCard({ e, onResolve }: { e: Extract<Event, { kind: "approval" }
         {e.error && <div className="mt-2 text-xs text-red-600">{e.error}</div>}
       </div>
       {e.status === "pending" && (
-        <div className="flex justify-end gap-2 border-t border-amber-100 px-4 py-2.5">
+        <div className="flex justify-end gap-2 border-t border-zinc-100 px-4 py-2.5">
           <Button size="sm" variant="ghost" loading={loading === "reject"} onClick={() => act("reject")}>
             Reject
           </Button>

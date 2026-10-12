@@ -32,9 +32,9 @@ function Settings() {
     <>
       <PageHeader title="Settings" subtitle="Your company profile powers every AI-written message, score and insight." />
       {params.get("welcome") && (
-        <Card className="mb-6 border-violet-200 bg-violet-50/60 px-5 py-4">
-          <div className="text-sm font-semibold text-violet-900">Welcome to Comuno 👋</div>
-          <p className="mt-1 text-[13px] text-violet-800">
+        <Card className="mb-6 border-brand-200 bg-brand-50/60 px-5 py-4">
+          <div className="text-sm font-semibold text-brand-900">Welcome to Comuno 👋</div>
+          <p className="mt-1 text-[13px] text-brand-800">
             Start by entering your website below and clicking <b>Autofill with AI</b>. Gemini will research your company and draft your profile and ideal customer profile.
           </p>
         </Card>
@@ -98,7 +98,7 @@ function SaveBar({ saving, saved, onClick }: { saving: boolean; saved: boolean; 
   return (
     <div className="flex items-center justify-end gap-3 border-t border-zinc-100 px-5 py-3">
       {saved && (
-        <span className="flex items-center gap-1 text-xs text-emerald-600">
+        <span className="flex items-center gap-1 text-xs text-brand-600">
           <Check className="size-3.5" /> Saved
         </span>
       )}
@@ -265,7 +265,7 @@ function EmailTab({ ws, envSmtp, onSaved }: { ws: Workspace; envSmtp: boolean; o
           actions={sending ? <Badge tone="green">Connected{!ws.smtp_json && envSmtp ? " (env)" : ""}</Badge> : <Badge tone="amber">Sandbox mode</Badge>}
         />
         {!sending && (
-          <p className="border-b border-zinc-100 bg-amber-50/50 px-5 py-2.5 text-xs text-amber-800">
+          <p className="border-b border-zinc-100 bg-zinc-50/50 px-5 py-2.5 text-xs text-zinc-800">
             No mailbox connected: emails are recorded as sent in sandbox mode but not delivered.
           </p>
         )}
@@ -327,10 +327,10 @@ function AiTab({ ws, env, onSaved }: { ws: Workspace; env: SettingsData["env"]; 
           <Input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder="AIza…" autoComplete="off" />
         </Field>
         <ErrorNote error={error || test.error} />
-        {test.result && <div className="rounded-lg bg-emerald-50 px-3 py-2 text-[13px] text-emerald-800">{test.result}</div>}
+        {test.result && <div className="rounded-lg bg-brand-50 px-3 py-2 text-[13px] text-brand-800">{test.result}</div>}
       </div>
       <div className="flex items-center justify-end gap-3 border-t border-zinc-100 px-5 py-3">
-        {saved && <span className="text-xs text-emerald-600">Saved</span>}
+        {saved && <span className="text-xs text-brand-600">Saved</span>}
         <Button loading={test.loading} onClick={runTest}>
           Test connection
         </Button>
@@ -380,8 +380,8 @@ function ApiTab() {
           </Button>
         </div>
         {created && (
-          <div className="mx-5 mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[13px]">
-            <div className="font-medium text-emerald-900">Copy your key now. It won&apos;t be shown again.</div>
+          <div className="mx-5 mb-4 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2.5 text-[13px]">
+            <div className="font-medium text-brand-900">Copy your key now. It won&apos;t be shown again.</div>
             <div className="mt-1.5 flex items-center gap-2">
               <code className="min-w-0 flex-1 truncate rounded bg-white px-2 py-1 text-xs">{created}</code>
               <Button size="sm" icon={<Copy className="size-3" />} onClick={() => copy(created, "new")}>
@@ -461,7 +461,7 @@ function ApiTab() {
             ["POST", "/api/inbox/inbound", "Webhook: log an inbound reply { from, subject, text }"],
           ].map(([m, p, d]) => (
             <div key={p} className="flex flex-wrap gap-x-3">
-              <span className="w-10 font-semibold text-violet-700">{m}</span>
+              <span className="w-10 font-semibold text-brand-700">{m}</span>
               <span className="text-zinc-900">{p}</span>
               <span className="font-sans text-zinc-500">{d}</span>
             </div>
@@ -490,7 +490,7 @@ function BillingTab({ ws, ledger }: { ws: Workspace; ledger: SettingsData["ledge
                 <div className="text-sm font-semibold">{p.name}</div>
                 {p.id === ws.plan && <Badge tone="violet">Current</Badge>}
               </div>
-              <div className="mt-2 font-serif text-3xl">{p.price}</div>
+              <div className="mt-2 font-display font-semibold text-3xl">{p.price}</div>
               <div className="mt-2 text-xs text-zinc-600">{p.credits}</div>
               <div className="text-xs text-zinc-500">{p.seats}</div>
               {p.id !== ws.plan && p.id !== "free" && (
@@ -519,7 +519,7 @@ function BillingTab({ ws, ledger }: { ws: Workspace; ledger: SettingsData["ledge
             {ledger.map((l, i) => (
               <tr key={i}>
                 <Td>{l.reason.replace(/_/g, " ")}</Td>
-                <Td className={`text-right tabular-nums ${l.amount < 0 ? "text-zinc-700" : "text-emerald-600"}`}>
+                <Td className={`text-right tabular-nums ${l.amount < 0 ? "text-zinc-700" : "text-brand-600"}`}>
                   {l.amount > 0 ? "+" : ""}
                   {l.amount}
                 </Td>

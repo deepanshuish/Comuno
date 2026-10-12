@@ -88,7 +88,7 @@ function DealDrawerBody({ dealId, onClose, onChanged }: { dealId: string; onClos
       <div className="space-y-3 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="font-serif text-[22px] leading-tight text-zinc-900">{deal.name}</h2>
+            <h2 className="font-display font-semibold text-[22px] leading-tight text-zinc-900">{deal.name}</h2>
             <div className="mt-1 text-2xl font-semibold tabular-nums tracking-tight text-zinc-900">{money(deal.value)}</div>
           </div>
           <div className="flex shrink-0 gap-1">
@@ -241,8 +241,8 @@ function InsightView({ insight, contactId }: { insight: Insight; contactId: stri
     <div className="space-y-3">
       {insight.summary && <p className="text-[13px] leading-relaxed text-zinc-700">{insight.summary}</p>}
       {insight.next_best_action && (
-        <Card className="border-violet-200 bg-violet-50/50 px-4 py-3">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
+        <Card className="border-brand-200 bg-brand-50/50 px-4 py-3">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">
             <Lightbulb className="size-3.5" /> Next best action
           </div>
           <p className="mt-1 text-[13px] leading-relaxed text-zinc-900">{insight.next_best_action}</p>
@@ -251,7 +251,7 @@ function InsightView({ insight, contactId }: { insight: Insight; contactId: stri
       {insight.risks.length > 0 && (
         <div>
           <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-zinc-700">
-            <AlertTriangle className="size-3.5 text-amber-500" /> Risks
+            <AlertTriangle className="size-3.5 text-zinc-500" /> Risks
           </div>
           <ul className="space-y-1 text-[13px] text-zinc-700">
             {insight.risks.map((r, i) => (

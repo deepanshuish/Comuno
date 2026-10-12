@@ -195,7 +195,7 @@ export function AddToSequenceModal({ open, onClose, contactIds, onDone }: { open
           title={unavailable ? "Sequences aren't available yet" : "No sequences yet"}
           body="Create a multichannel sequence first, then enroll people into it."
           action={
-            <Link href="/sequences" className="text-[13px] font-medium text-violet-700 hover:underline">
+            <Link href="/sequences" className="text-[13px] font-medium text-brand-700 hover:underline">
               Go to Sequences →
             </Link>
           }

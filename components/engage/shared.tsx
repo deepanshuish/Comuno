@@ -18,11 +18,11 @@ export const STEP_ICON: Record<StepType, LucideIcon> = {
 };
 
 const STEP_TONE: Record<StepType, string> = {
-  email: "bg-sky-50 text-sky-700 ring-sky-100",
-  linkedin_connect: "bg-indigo-50 text-indigo-700 ring-indigo-100",
-  linkedin_message: "bg-indigo-50 text-indigo-700 ring-indigo-100",
-  call: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-  task: "bg-amber-50 text-amber-700 ring-amber-100",
+  email: "bg-zinc-50 text-zinc-700 ring-zinc-100",
+  linkedin_connect: "bg-brand-50 text-brand-700 ring-brand-100",
+  linkedin_message: "bg-brand-50 text-brand-700 ring-brand-100",
+  call: "bg-brand-50 text-brand-700 ring-brand-100",
+  task: "bg-zinc-50 text-zinc-700 ring-zinc-100",
 };
 
 export function StepIcon({ type, className }: { type: StepType; className?: string }) {
@@ -65,8 +65,8 @@ export function StatusBadge({ status }: { status: string }) {
 export function SandboxBanner({ mailer }: { mailer?: MailerMode | null }) {
   if (!mailer || mailer.mode !== "sandbox") return null;
   return (
-    <div className="mb-5 flex flex-wrap items-start gap-3 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-[13px] text-amber-900">
-      <FlaskConical className="mt-0.5 size-4 shrink-0 text-amber-600" />
+    <div className="mb-5 flex flex-wrap items-start gap-3 rounded-xl border border-zinc-200 bg-zinc-50/70 px-4 py-3 text-[13px] text-zinc-900">
+      <FlaskConical className="mt-0.5 size-4 shrink-0 text-zinc-600" />
       <div className="min-w-0 flex-1">
         <span className="font-medium">Sandbox mode — emails are not delivered.</span>{" "}
         No SMTP server is configured, so sends are recorded in Comuno (marked “sandbox”) but never leave the server. Add SMTP
@@ -86,7 +86,7 @@ export function CopyButton({ text, label = "Copy", size = "sm" }: { text: string
     <Button
       size={size}
       variant="secondary"
-      icon={done ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+      icon={done ? <Check className="size-3.5 text-brand-600" /> : <Copy className="size-3.5" />}
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(text);

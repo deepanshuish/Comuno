@@ -30,7 +30,7 @@ export function EmailStatusBadge({ status }: { status: EmailStatus }) {
 /** Email cell: address with a small verification dot. */
 export function EmailCell({ email, status }: { email: string | null; status: EmailStatus }) {
   if (!email) return <span className="text-xs text-zinc-400">—</span>;
-  const dot = { valid: "bg-emerald-500", risky: "bg-amber-400", invalid: "bg-red-500", unknown: "bg-zinc-300" }[status] || "bg-zinc-300";
+  const dot = { valid: "bg-brand-500", risky: "bg-zinc-400", invalid: "bg-red-500", unknown: "bg-zinc-300" }[status] || "bg-zinc-300";
   return (
     <span className="inline-flex max-w-[220px] items-center gap-1.5" title={`Email ${status}`}>
       <span className={cx("size-1.5 shrink-0 rounded-full", dot)} />
@@ -46,7 +46,7 @@ export function LinkedInLink({ url }: { url: string | null | undefined }) {
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex size-4 shrink-0 items-center justify-center rounded-[3px] bg-sky-700 text-[9px] font-bold leading-none text-white hover:bg-sky-800"
+      className="inline-flex size-4 shrink-0 items-center justify-center rounded-[3px] bg-zinc-700 text-[9px] font-bold leading-none text-white hover:bg-zinc-800"
       title="LinkedIn profile"
       aria-label="LinkedIn profile"
       onClick={(e) => e.stopPropagation()}
@@ -58,7 +58,7 @@ export function LinkedInLink({ url }: { url: string | null | undefined }) {
 
 export function ExtLink({ href, children }: { href: string; children?: ReactNode }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-violet-700 hover:underline" onClick={(e) => e.stopPropagation()}>
+    <a href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-brand-700 hover:underline" onClick={(e) => e.stopPropagation()}>
       {children ?? hostOf(href)} <ExternalLink className="size-3" />
     </a>
   );
@@ -113,7 +113,7 @@ export function Pagination({ total, limit, offset, onChange }: { total: number; 
 export function BulkBar({ count, onClear, children }: { count: number; onClear: () => void; children: ReactNode }) {
   if (!count) return null;
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-violet-100 bg-violet-50/60 px-4 py-2">
+    <div className="flex flex-wrap items-center gap-2 border-b border-brand-100 bg-brand-50/60 px-4 py-2">
       <span className="text-[13px] font-medium text-zinc-900">{count} selected</span>
       <button className="text-xs text-zinc-500 hover:text-zinc-800" onClick={onClear}>
         Clear
@@ -157,7 +157,7 @@ export function ChipsInput({ value, onChange, placeholder, suggestions }: { valu
   };
   return (
     <div>
-      <div className="flex min-h-9 flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-1.5 py-1 focus-within:border-violet-400 focus-within:ring-2 focus-within:ring-violet-100">
+      <div className="flex min-h-9 flex-wrap items-center gap-1 rounded-lg border border-zinc-200 bg-white px-1.5 py-1 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100">
         {value.map((v) => (
           <span key={v} className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-1.5 py-0.5 text-[12px] text-zinc-700">
             {v}
@@ -211,7 +211,7 @@ function inline(text: string, keyBase: string): ReactNode[] {
     else if (tok.startsWith("`")) out.push(<code key={k} className="rounded bg-zinc-100 px-1 text-[12px]">{tok.slice(1, -1)}</code>);
     else if (tok.startsWith("[")) {
       const lm = tok.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-      if (lm) out.push(<a key={k} href={lm[2]} target="_blank" rel="noreferrer" className="text-violet-700 hover:underline">{lm[1]}</a>);
+      if (lm) out.push(<a key={k} href={lm[2]} target="_blank" rel="noreferrer" className="text-brand-700 hover:underline">{lm[1]}</a>);
     } else out.push(<em key={k}>{tok.slice(1, -1)}</em>);
     last = m.index + tok.length;
   }

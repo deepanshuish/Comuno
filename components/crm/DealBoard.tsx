@@ -50,7 +50,7 @@ export function DealBoard({
               }}
               className={cx(
                 "flex w-[264px] shrink-0 flex-col rounded-xl border bg-zinc-50/70 transition-colors",
-                isOver ? "border-violet-300 bg-violet-50/60" : "border-zinc-200/80",
+                isOver ? "border-brand-300 bg-brand-50/60" : "border-zinc-200/80",
               )}
             >
               <header className="flex items-center gap-2 px-3 pb-2 pt-3">
@@ -122,13 +122,13 @@ function DealCard({
       role="button"
       aria-label={`Open deal ${deal.name}`}
       className={cx(
-        "group cursor-grab rounded-lg border border-zinc-200 bg-white p-3 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-zinc-300 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-violet-500 active:cursor-grabbing",
+        "group cursor-grab rounded-lg border border-zinc-200 bg-white p-3 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-zinc-300 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-brand-500 active:cursor-grabbing",
         dragging && "opacity-40",
       )}
     >
       <div className="flex items-start justify-between gap-2">
         <h4 className="line-clamp-2 text-[13px] font-medium leading-snug text-zinc-900">{deal.name}</h4>
-        {deal.ai_insight && <span className="mt-1 size-1.5 shrink-0 rounded-full bg-violet-500" title="Has AI insight" />}
+        {deal.ai_insight && <span className="mt-1 size-1.5 shrink-0 rounded-full bg-brand-500" title="Has AI insight" />}
       </div>
       <div className="mt-1 text-[15px] font-semibold tabular-nums tracking-tight text-zinc-900">{money(deal.value)}</div>
       <div className="mt-2 space-y-1 text-xs text-zinc-500">

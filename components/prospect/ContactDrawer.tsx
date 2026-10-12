@@ -226,7 +226,7 @@ export function ContactDrawer({ contactId, onClose, onChanged }: { contactId: st
             </Link>
           </div>
           <ErrorNote error={error} />
-          {info && <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] text-emerald-800">{info}</div>}
+          {info && <div className="rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-[13px] text-brand-800">{info}</div>}
 
           <Tabs
             value={tab}
@@ -360,8 +360,8 @@ function ResearchTab({ enr, contact, onEnrich, busy }: { enr: Enrichment; contac
   return (
     <div className="space-y-4">
       {enr.discovery?.reason && (
-        <div className="rounded-lg border border-violet-100 bg-violet-50/50 px-3 py-2 text-[13px] text-zinc-700">
-          <div className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-violet-700">Why they matched</div>
+        <div className="rounded-lg border border-brand-100 bg-brand-50/50 px-3 py-2 text-[13px] text-zinc-700">
+          <div className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-brand-700">Why they matched</div>
           {enr.discovery.reason}
           {enr.discovery.source_url && (
             <div className="mt-1 text-xs">
@@ -392,7 +392,7 @@ function ResearchTab({ enr, contact, onEnrich, busy }: { enr: Enrichment; contac
       ) : (
         <>
           {enr.still_at_company === false && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-[13px] text-zinc-800">
               Possible job change: now {enr.current_title || "—"} at {enr.current_company || "another company"}.
             </div>
           )}

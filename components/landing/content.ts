@@ -1,8 +1,6 @@
 // Marketing copy shared by the human landing page and its machine-readable version.
 // Keep claims factual: only describe what Comuno actually does.
 
-export const ROTATING = ["reps", "founders", "RevOps", "you", "GTM engineers"];
-
 export const PRODUCTS = [
   {
     id: "prospect",
@@ -46,9 +44,10 @@ export const AGENT_PROMPTS = [
 ];
 
 export const HOW_IT_WORKS = [
-  { n: "01", title: "Tell Comuno who you sell to", body: "Paste your website. Gemini researches it and drafts your company profile and ideal customer profile in seconds." },
-  { n: "02", title: "Agents build your pipeline", body: "Discover and enrich real prospects, score fit, and draft personalized multi-channel outreach for each one." },
-  { n: "03", title: "You stay in control", body: "Approve every send, work replies from one inbox, and run deals on a pipeline that tells you what to do next." },
+  { n: "01", title: "Find", body: "Describe your buyer. Agents search the live web for matching companies and decision makers, with a source for each." },
+  { n: "02", title: "Enrich", body: "Fill in firmographics, funding and tech stack, find and verify work emails, and score every lead against your ICP." },
+  { n: "03", title: "Engage", body: "Run personalized sequences across email, LinkedIn and calls, and work every reply from one inbox." },
+  { n: "04", title: "Close", body: "Move deals through a pipeline that flags risks and suggests the next step, with buying signals alongside." },
 ];
 
 export const TRUST = [

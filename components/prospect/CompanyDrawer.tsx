@@ -194,7 +194,7 @@ export function CompanyDrawer({
             </Button>
           </div>
           <ErrorNote error={error} />
-          {info && <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] text-emerald-800">{info}</div>}
+          {info && <div className="rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-[13px] text-brand-800">{info}</div>}
 
           <Tabs
             value={tab}
@@ -210,8 +210,8 @@ export function CompanyDrawer({
           {tab === "overview" && (
             <div className="space-y-4">
               {enr.discovery?.reason && (
-                <div className="rounded-lg border border-violet-100 bg-violet-50/50 px-3 py-2 text-[13px] text-zinc-700">
-                  <div className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-violet-700">Why it matched</div>
+                <div className="rounded-lg border border-brand-100 bg-brand-50/50 px-3 py-2 text-[13px] text-zinc-700">
+                  <div className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-brand-700">Why it matched</div>
                   {enr.discovery.reason}
                 </div>
               )}

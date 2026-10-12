@@ -30,11 +30,11 @@ export const SIGNAL_META: Record<SignalType, { label: string; icon: LucideIcon; 
 
 const toneBg: Record<Tone, string> = {
   zinc: "bg-zinc-100 text-zinc-600",
-  violet: "bg-violet-50 text-violet-600",
-  green: "bg-emerald-50 text-emerald-600",
-  amber: "bg-amber-50 text-amber-600",
+  violet: "bg-brand-50 text-brand-600",
+  green: "bg-brand-50 text-brand-600",
+  amber: "bg-zinc-50 text-zinc-600",
   red: "bg-red-50 text-red-600",
-  blue: "bg-sky-50 text-sky-600",
+  blue: "bg-zinc-50 text-zinc-600",
 };
 
 export function SignalIcon({ type, className }: { type: SignalType; className?: string }) {
@@ -81,10 +81,10 @@ export function SignalItem({
   const meta = SIGNAL_META[s.type] ?? SIGNAL_META.news;
   const unseen = !s.seen;
   return (
-    <article className={cx("flex gap-3 px-4 py-3.5 sm:px-5", unseen && !compact && "bg-violet-50/30")}>
+    <article className={cx("flex gap-3 px-4 py-3.5 sm:px-5", unseen && !compact && "bg-brand-50/30")}>
       <div className="relative">
         <SignalIcon type={s.type} />
-        {unseen && <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-white bg-violet-500" title="New" />}
+        {unseen && <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-white bg-brand-500" title="New" />}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-zinc-500">

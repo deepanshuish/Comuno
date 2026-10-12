@@ -149,7 +149,7 @@ function FindLeads() {
               }}
               className={cx(
                 "-mb-px inline-flex items-center gap-1.5 border-b-2 px-3 pb-2.5 text-[13px] font-medium",
-                mode === t.id ? "border-violet-600 text-zinc-900" : "border-transparent text-zinc-500 hover:text-zinc-800",
+                mode === t.id ? "border-brand-600 text-zinc-900" : "border-transparent text-zinc-500 hover:text-zinc-800",
               )}
             >
               <t.icon className="size-3.5" /> {t.label}
@@ -170,7 +170,7 @@ function FindLeads() {
           {!query && (
             <div className="flex flex-wrap gap-1.5">
               {EXAMPLES[mode].map((ex) => (
-                <button key={ex} onClick={() => setQuery(ex)} className="rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-600 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-800">
+                <button key={ex} onClick={() => setQuery(ex)} className="rounded-full border border-zinc-200 px-2.5 py-1 text-[12px] text-zinc-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800">
                   {ex}
                 </button>
               ))}
@@ -209,7 +209,7 @@ function FindLeads() {
                   </>
                 )}
                 <div className="flex items-center gap-3 text-xs text-zinc-500 sm:col-span-2">
-                  <Link href="/settings" className="text-violet-700 hover:underline">
+                  <Link href="/settings" className="text-brand-700 hover:underline">
                     {hasIcp ? "Edit saved ICP" : "Save an ICP in Settings"}
                   </Link>
                   <span>·</span>
@@ -230,7 +230,7 @@ function FindLeads() {
                 <option value="25">Up to 25</option>
               </Select>
               <span className="inline-flex items-center gap-1">
-                <Coins className="size-3.5 text-amber-500" /> 10 credits per search
+                <Coins className="size-3.5 text-zinc-500" /> 10 credits per search
               </span>
             </div>
             <Button variant="ai" size="lg" loading={searching} disabled={!canSearch} onClick={search} icon={<Search className="size-4" />}>
@@ -244,8 +244,8 @@ function FindLeads() {
       {searching ? (
         <Card className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
           <div className="relative">
-            <Globe2 className="size-8 text-violet-300" />
-            <Spinner className="absolute -bottom-1 -right-1 size-4 text-violet-600" />
+            <Globe2 className="size-8 text-brand-300" />
+            <Spinner className="absolute -bottom-1 -right-1 size-4 text-brand-600" />
           </div>
           <div className="text-sm font-medium text-zinc-900">Searching the web…</div>
           <p className="max-w-sm text-[13px] text-zinc-500">
@@ -277,7 +277,7 @@ function FindLeads() {
             )}
           </div>
           {saved && (
-            <div className="flex flex-wrap items-center gap-2 border-b border-emerald-100 bg-emerald-50 px-4 py-2.5 text-[13px] text-emerald-800">
+            <div className="flex flex-wrap items-center gap-2 border-b border-brand-100 bg-brand-50 px-4 py-2.5 text-[13px] text-brand-800">
               <CheckCircle2 className="size-4" />
               Saved {saved.created} new {saved.mode === "people" ? "people" : "companies"}
               {saved.skipped > 0 && ` · ${saved.skipped} already existed`}
@@ -319,7 +319,7 @@ function FindLeads() {
             { icon: Save, title: "Save & act", body: "Save picks into People or a list, then find emails, enrich and enroll in sequences." },
           ].map((f) => (
             <Card key={f.title} className="p-4">
-              <f.icon className="mb-2 size-4 text-violet-600" />
+              <f.icon className="mb-2 size-4 text-brand-600" />
               <div className="text-[13px] font-medium text-zinc-900">{f.title}</div>
               <p className="mt-1 text-[13px] text-zinc-500">{f.body}</p>
             </Card>

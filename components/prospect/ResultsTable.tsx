@@ -34,7 +34,7 @@ export function ProspectResultsTable({
         {results.map((r, i) => {
           const name = `${r.first_name} ${r.last_name}`.trim();
           return (
-            <tr key={`${name}-${r.company}-${i}`} className={selected.has(i) ? "bg-violet-50/40" : "hover:bg-zinc-50/60"} onClick={() => onToggle(i)}>
+            <tr key={`${name}-${r.company}-${i}`} className={selected.has(i) ? "bg-brand-50/40" : "hover:bg-zinc-50/60"} onClick={() => onToggle(i)}>
               <Td>
                 <Checkbox label={`Select ${name}`} checked={selected.has(i)} onChange={() => onToggle(i)} />
               </Td>
@@ -98,7 +98,7 @@ export function CompanyResultsTable({
       </thead>
       <tbody>
         {results.map((r, i) => (
-          <tr key={`${r.name}-${i}`} className={selected.has(i) ? "bg-violet-50/40" : "hover:bg-zinc-50/60"} onClick={() => onToggle(i)}>
+          <tr key={`${r.name}-${i}`} className={selected.has(i) ? "bg-brand-50/40" : "hover:bg-zinc-50/60"} onClick={() => onToggle(i)}>
             <Td>
               <Checkbox label={`Select ${r.name}`} checked={selected.has(i)} onChange={() => onToggle(i)} />
             </Td>

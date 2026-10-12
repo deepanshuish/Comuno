@@ -115,7 +115,7 @@ function Inbox() {
                   onClick={() => select(t.contact.id)}
                   className={cx(
                     "flex w-full gap-3 border-b border-zinc-100 px-3 py-3 text-left transition-colors",
-                    selected === t.contact.id ? "bg-violet-50/60" : "hover:bg-zinc-50",
+                    selected === t.contact.id ? "bg-brand-50/60" : "hover:bg-zinc-50",
                   )}
                 >
                   <Avatar name={fullName(t.contact)} />
@@ -130,7 +130,7 @@ function Inbox() {
                       {t.last.subject || t.last.body?.slice(0, 80)}
                     </div>
                     <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                      {t.needsReply && <span className="size-1.5 rounded-full bg-violet-600" title="Needs reply" />}
+                      {t.needsReply && <span className="size-1.5 rounded-full bg-brand-600" title="Needs reply" />}
                       <SentimentBadge value={t.sentiment} />
                       {t.last.status === "failed" && <StatusBadge status="bounced" />}
                       <span className="text-[11px] text-zinc-400">{t.count} message{t.count === 1 ? "" : "s"}</span>

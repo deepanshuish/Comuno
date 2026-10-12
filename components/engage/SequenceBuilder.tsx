@@ -198,10 +198,10 @@ export default function SequenceBuilder({ detail, onSaved }: { detail: SequenceD
                       placeholder={BODY_PLACEHOLDER[s.type]}
                     />
                   </Field>
-                  <div className={cx("rounded-lg border px-3 py-2.5 transition-colors", s.ai_personalize ? "border-violet-200 bg-violet-50/50" : "border-zinc-200")}>
+                  <div className={cx("rounded-lg border px-3 py-2.5 transition-colors", s.ai_personalize ? "border-brand-200 bg-brand-50/50" : "border-zinc-200")}>
                     <label className="flex cursor-pointer items-center gap-2.5">
                       <Toggle checked={!!s.ai_personalize} onChange={(v) => edit(s.key, { ai_personalize: v ? 1 : 0 })} />
-                      <Sparkles className={cx("size-3.5", s.ai_personalize ? "text-violet-600" : "text-zinc-400")} />
+                      <Sparkles className={cx("size-3.5", s.ai_personalize ? "text-brand-600" : "text-zinc-400")} />
                       <span className="whitespace-nowrap text-[13px] font-medium text-zinc-800">AI personalize</span>
                       <span className="hidden text-xs text-zinc-500 sm:inline">
                         — {s.type === "email" ? "rewrite per prospect using their profile, company & signals" : s.type === "call" ? "write a tailored talk track" : "write a tailored note"} (1 credit)
@@ -315,7 +315,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
         e.preventDefault();
         onChange(!checked);
       }}
-      className={cx("relative h-[18px] w-8 shrink-0 rounded-full transition-colors", checked ? "bg-violet-600" : "bg-zinc-300")}
+      className={cx("relative h-[18px] w-8 shrink-0 rounded-full transition-colors", checked ? "bg-brand-600" : "bg-zinc-300")}
     >
       <span className={cx("absolute top-0.5 size-3.5 rounded-full bg-white shadow transition-all", checked ? "left-[16px]" : "left-0.5")} />
     </button>

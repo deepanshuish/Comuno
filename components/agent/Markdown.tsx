@@ -119,11 +119,11 @@ function inline(s: string): ReactNode[] {
   while ((m = re.exec(s))) {
     if (m.index > last) out.push(s.slice(last, m.index));
     const k = out.length;
-    if (m[2] && m[3]) out.push(<a key={k} href={m[3]} target="_blank" rel="noreferrer" className="text-violet-700 underline underline-offset-2">{m[2]}</a>);
+    if (m[2] && m[3]) out.push(<a key={k} href={m[3]} target="_blank" rel="noreferrer" className="text-brand-700 underline underline-offset-2">{m[2]}</a>);
     else if (m[4]) out.push(<strong key={k} className="font-semibold text-zinc-900">{m[4]}</strong>);
     else if (m[5]) out.push(<code key={k} className="rounded bg-zinc-100 px-1 py-0.5 text-[12px]">{m[5]}</code>);
     else if (m[6]) out.push(<em key={k}>{m[6]}</em>);
-    else if (m[7]) out.push(<a key={k} href={m[7]} target="_blank" rel="noreferrer" className="break-all text-violet-700 underline underline-offset-2">{m[7]}</a>);
+    else if (m[7]) out.push(<a key={k} href={m[7]} target="_blank" rel="noreferrer" className="break-all text-brand-700 underline underline-offset-2">{m[7]}</a>);
     last = m.index + m[0].length;
   }
   if (last < s.length) out.push(s.slice(last));

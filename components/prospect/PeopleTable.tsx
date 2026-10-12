@@ -274,7 +274,7 @@ export function PeopleTable({
               </thead>
               <tbody>
                 {contacts.map((c) => (
-                  <tr key={c.id} className={sel.has(c.id) ? "cursor-pointer bg-violet-50/40" : "cursor-pointer hover:bg-zinc-50/70"} onClick={() => setOpenId(c.id)}>
+                  <tr key={c.id} className={sel.has(c.id) ? "cursor-pointer bg-brand-50/40" : "cursor-pointer hover:bg-zinc-50/70"} onClick={() => setOpenId(c.id)}>
                     <Td>
                       <Checkbox label={`Select ${fullName(c)}`} checked={sel.has(c.id)} onChange={() => toggle(c.id)} />
                     </Td>

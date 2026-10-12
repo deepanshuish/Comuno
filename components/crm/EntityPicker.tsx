@@ -76,7 +76,7 @@ export function EntityPicker({
       <div
         className={cx(
           "flex h-9 w-full items-center gap-2 rounded-lg border bg-white pl-3 pr-1.5 text-[13px]",
-          open ? "border-violet-400 ring-2 ring-violet-100" : "border-zinc-200",
+          open ? "border-brand-400 ring-2 ring-brand-100" : "border-zinc-200",
         )}
       >
         <Icon className="size-3.5 shrink-0 text-zinc-400" />
