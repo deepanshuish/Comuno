@@ -178,43 +178,59 @@ export async function discoverProspects(
   if (!target) throw new HttpError(400, "Describe who you're looking for or set at least one filter.");
   const limit = clampLimit(input.limit, 10, 25);
   return withCredits(ws, "prospect_search", 1, async () => {
-    const { data, sources } = await generateJSON<{ results?: Partial<ProspectResult>[] }>({
-      workspace: ws,
-      search: true,
-      system: DISCOVERY_SYSTEM,
-      schema: PROSPECT_SCHEMA,
-      temperature: 0.2,
-      prompt: `Find up to ${limit} real decision makers who match this target. Search the web for companies that fit, then for the named people in the matching roles at those companies.
+    const seen = new Set<string>();
+    const results: ProspectResult[] = [];
+    const sources: Source[] = [];
+    // A single grounded search often surfaces only a few named people, so run up to
+    // three passes, each excluding people already found, until we reach the limit.
+    for (let pass = 0; pass < 3 && results.length < limit; pass++) {
+      const exclude = results.length
+        ? `\n\nAlready found (do NOT return these again; find different people, ideally at different companies):\n${results.map((r) => `- ${r.first_name} ${r.last_name}, ${r.company}`).join("\n")}`
+        : "";
+      const res = await generateJSON<{ results?: Partial<ProspectResult>[] }>({
+        workspace: ws,
+        search: true,
+        system: DISCOVERY_SYSTEM,
+        schema: PROSPECT_SCHEMA,
+        temperature: 0.2 + pass * 0.15,
+        prompt: `Find up to ${limit - results.length} real decision makers who match this target. Search the web for companies that fit, then for the named people in the matching roles at those companies. Run several different searches (company lists, funding news, team pages, press releases, conference speaker lists) to cover more companies.
 
 ${target}
 
 ${sellerContext(ws)}
 
-For each person return first_name, last_name, current title, company name, the company's website domain, a LinkedIn profile URL only if you found one, location, a one-sentence reason they match, and the source_url where you found them.`,
-    });
-    const seen = new Set<string>();
-    const results: ProspectResult[] = [];
-    for (const r of data.results || []) {
-      let first = str(r.first_name) || "";
-      let last = str(r.last_name) || "";
-      if (first && !last && first.includes(" ")) ({ first, last } = splitName(first));
-      const company = str(r.company);
-      if (!first || !company) continue;
-      const key = `${first} ${last} ${company}`.toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      results.push({
-        first_name: first,
-        last_name: last,
-        title: str(r.title) || "",
-        company,
-        domain: normalizeDomain(str(r.domain)),
-        linkedin_url: cleanLinkedIn(r.linkedin_url),
-        location: str(r.location),
-        reason: str(r.reason) || "",
-        source_url: cleanUrl(r.source_url),
+For each person return first_name, last_name, current title, company name, the company's website domain, a LinkedIn profile URL only if you found one, location, a one-sentence reason they match, and the source_url where you found them.${exclude}`,
+      }).catch((e) => {
+        // Keep earlier passes' results if a later pass fails.
+        if (pass === 0) throw e;
+        return null;
       });
-      if (results.length >= limit) break;
+      if (!res) break;
+      for (const src of res.sources) if (!sources.some((x) => x.url === src.url)) sources.push(src);
+      const before = results.length;
+      for (const r of res.data.results || []) {
+        let first = str(r.first_name) || "";
+        let last = str(r.last_name) || "";
+        if (first && !last && first.includes(" ")) ({ first, last } = splitName(first));
+        const company = str(r.company);
+        if (!first || !company) continue;
+        const key = `${first} ${last} ${company}`.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        results.push({
+          first_name: first,
+          last_name: last,
+          title: str(r.title) || "",
+          company,
+          domain: normalizeDomain(str(r.domain)),
+          linkedin_url: cleanLinkedIn(r.linkedin_url),
+          location: str(r.location),
+          reason: str(r.reason) || "",
+          source_url: cleanUrl(r.source_url),
+        });
+        if (results.length >= limit) break;
+      }
+      if (results.length === before) break; // no new people; stop searching
     }
     return { results, sources };
   });

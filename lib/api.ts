@@ -43,6 +43,12 @@ export function errorResponse(e: unknown) {
   const err = e as { status?: number; message?: string };
   console.error(e);
   // Surface Gemini API errors (bad key, quota) with a readable message.
+  if (err?.status === 429) {
+    return Response.json(
+      { error: "Gemini quota reached for this API key. Wait a minute and retry, or enable billing on the key in Google AI Studio." },
+      { status: 429 },
+    );
+  }
   if (typeof err?.status === "number" && err.status >= 400 && err.status < 600) {
     return Response.json({ error: `AI engine error: ${err.message || "request failed"}` }, { status: 502 });
   }

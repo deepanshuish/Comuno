@@ -115,7 +115,7 @@ const EMAIL_RULES = `Writing rules:
 - Short: 60–130 words for a first touch, 30–80 for follow-ups. One clear, low-friction call to action.
 - Specific to the prospect: reference their role, company, or a real signal from the context. Never invent facts that aren't in the context.
 - Sound like a thoughtful human, not marketing copy. No "I hope this email finds you well".
-- End with a short sign-off using only the sender's first name (a full signature is appended automatically).`;
+- End with a short sign-off using only the sender's first name (a full signature is appended automatically). If the sender's name isn't given in the context, end with just "Best," and no name. Never make up a name.`;
 
 /* ------------------------------------------------------------------ */
 /* AI writing                                                          */

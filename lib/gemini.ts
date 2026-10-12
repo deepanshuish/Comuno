@@ -1,5 +1,5 @@
 import "server-only";
-import { GoogleGenAI, type Content, type FunctionDeclaration, type Tool } from "@google/genai";
+import { GoogleGenAI, type Content, type FunctionDeclaration, type GenerateContentParameters, type Tool } from "@google/genai";
 import { HttpError } from "./auth";
 import type { Workspace } from "./types";
 
@@ -8,12 +8,18 @@ import type { Workspace } from "./types";
  *
  * Configuration:
  *   GEMINI_API_KEY  – required (or set per-workspace in Settings → AI engine)
- *   GEMINI_MODEL    – default model, defaults to the always-current "gemini-flash-latest"
- *   GEMINI_PRO_MODEL – model for heavier reasoning (agent, research), defaults to "gemini-pro-latest"
+ *   GEMINI_MODEL        – default model, defaults to the always-current "gemini-flash-latest"
+ *   GEMINI_PRO_MODEL    – model for heavier research; defaults to GEMINI_MODEL (Pro models need a paid tier)
+ *   GEMINI_SEARCH_MODEL – model for Google Search-grounded calls; defaults to the requested model
+ *
+ * If a model is out of quota or unavailable for the key (429/404), calls fall back
+ * to FALLBACK_MODELS, so free-tier keys keep working (e.g. search grounding).
  */
 
 export const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
-export const PRO_MODEL = process.env.GEMINI_PRO_MODEL || process.env.GEMINI_MODEL || "gemini-pro-latest";
+export const PRO_MODEL = process.env.GEMINI_PRO_MODEL || DEFAULT_MODEL;
+const SEARCH_MODEL = process.env.GEMINI_SEARCH_MODEL;
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS || "gemini-2.5-flash,gemini-flash-latest").split(",").map((m) => m.trim()).filter(Boolean);
 
 export function geminiClient(workspace?: Pick<Workspace, "gemini_api_key"> | null) {
   const apiKey = workspace?.gemini_api_key || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -28,6 +34,23 @@ export function geminiClient(workspace?: Pick<Workspace, "gemini_api_key"> | nul
 
 export type Source = { title: string; url: string };
 
+/** generateContent with model fallback on quota (429) or unavailable-model (404) errors. */
+async function generate(ai: GoogleGenAI, params: GenerateContentParameters, search = false) {
+  const first = (search && SEARCH_MODEL) || params.model;
+  const models = [first, ...FALLBACK_MODELS.filter((m) => m !== first)];
+  let lastErr: unknown;
+  for (const model of models) {
+    try {
+      return await ai.models.generateContent({ ...params, model });
+    } catch (e) {
+      const status = (e as { status?: number }).status;
+      if (status !== 429 && status !== 404) throw e;
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
 type GenOpts = {
   workspace?: Workspace | null;
   system?: string;
@@ -41,15 +64,19 @@ type GenOpts = {
 /** Generate free text. Returns the text and any Google Search sources used. */
 export async function generateText(opts: GenOpts): Promise<{ text: string; sources: Source[] }> {
   const ai = geminiClient(opts.workspace);
-  const res = await ai.models.generateContent({
-    model: opts.model || DEFAULT_MODEL,
-    contents: opts.prompt,
-    config: {
-      systemInstruction: opts.system,
-      temperature: opts.temperature,
-      tools: opts.search ? [{ googleSearch: {} }] : undefined,
+  const res = await generate(
+    ai,
+    {
+      model: opts.model || DEFAULT_MODEL,
+      contents: opts.prompt,
+      config: {
+        systemInstruction: opts.system,
+        temperature: opts.temperature,
+        tools: opts.search ? [{ googleSearch: {} }] : undefined,
+      },
     },
-  });
+    opts.search,
+  );
   return { text: (res.text || "").trim(), sources: extractSources(res) };
 }
 
@@ -65,17 +92,21 @@ export async function generateJSON<T>(
   const ai = geminiClient(opts.workspace);
   const model = opts.model || DEFAULT_MODEL;
   const tryStructured = async () => {
-    const res = await ai.models.generateContent({
-      model,
-      contents: opts.prompt,
-      config: {
-        systemInstruction: opts.system,
-        temperature: opts.temperature,
-        tools: opts.search ? [{ googleSearch: {} }] : undefined,
-        responseMimeType: "application/json",
-        responseJsonSchema: opts.schema,
+    const res = await generate(
+      ai,
+      {
+        model,
+        contents: opts.prompt,
+        config: {
+          systemInstruction: opts.system,
+          temperature: opts.temperature,
+          tools: opts.search ? [{ googleSearch: {} }] : undefined,
+          responseMimeType: "application/json",
+          responseJsonSchema: opts.schema,
+        },
       },
-    });
+      opts.search,
+    );
     return { data: parseLooseJson<T>(res.text || ""), sources: extractSources(res) };
   };
 
@@ -83,17 +114,18 @@ export async function generateJSON<T>(
   try {
     return await tryStructured();
   } catch (e) {
-    if (e instanceof HttpError) throw e;
+    const status = (e as { status?: number }).status;
+    if (e instanceof HttpError || status === 429 || status === 401 || status === 403) throw e;
     // Fall back to prompting for JSON without a response schema.
     const prompt =
       typeof opts.prompt === "string"
         ? `${opts.prompt}\n\nRespond ONLY with JSON (no prose, no markdown fences) matching this JSON Schema:\n${JSON.stringify(opts.schema)}`
         : opts.prompt;
-    const res = await ai.models.generateContent({
-      model,
-      contents: prompt,
-      config: { systemInstruction: opts.system, temperature: opts.temperature, tools: [{ googleSearch: {} }] },
-    });
+    const res = await generate(
+      ai,
+      { model, contents: prompt, config: { systemInstruction: opts.system, temperature: opts.temperature, tools: [{ googleSearch: {} }] } },
+      true,
+    );
     return { data: parseLooseJson<T>(res.text || ""), sources: extractSources(res) };
   }
 }
@@ -108,11 +140,7 @@ export async function generateWithTools(opts: {
 }) {
   const ai = geminiClient(opts.workspace);
   const tools: Tool[] = [{ functionDeclarations: opts.functions }];
-  return ai.models.generateContent({
-    model: opts.model || DEFAULT_MODEL,
-    contents: opts.contents,
-    config: { systemInstruction: opts.system, tools },
-  });
+  return generate(ai, { model: opts.model || DEFAULT_MODEL, contents: opts.contents, config: { systemInstruction: opts.system, tools } });
 }
 
 export function parseLooseJson<T>(text: string): T {

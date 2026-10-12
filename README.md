@@ -38,7 +38,8 @@ Comuno stores everything in your Supabase project's Postgres database and connec
 | --- | --- |
 | `GEMINI_API_KEY` | Gemini API key (required for AI features). |
 | `GEMINI_MODEL` | Default model. Defaults to `gemini-flash-latest`. |
-| `GEMINI_PRO_MODEL` | Model for heavier research. Defaults to `gemini-pro-latest`. |
+| `GEMINI_PRO_MODEL` | Model for heavier research. Defaults to `GEMINI_MODEL` (Pro models need a paid tier). |
+| `GEMINI_SEARCH_MODEL` / `GEMINI_FALLBACK_MODELS` | Model for search-grounded calls, and models tried when one is out of quota. Free-tier keys often can't use search grounding on `gemini-flash-latest`, so calls fall back to `gemini-2.5-flash`. |
 | `GEMINI_AGENT_MODEL` | Model that drives the Agent. Defaults to `GEMINI_MODEL`. |
 | `DATABASE_URL` | Supabase Postgres connection string (Connect → Transaction pooler). The schema is created automatically on first run. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Default sending mailbox. Can be set per workspace in Settings. Without one, sending runs in **sandbox mode**: messages are recorded but not delivered. |
