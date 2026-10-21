@@ -48,6 +48,12 @@ export function errorResponse(e: unknown) {
   if (/DATABASE_URL/.test(err?.message || "") || ["ENOTFOUND", "ECONNREFUSED", "ETIMEDOUT", "28P01", "XX000", "3D000"].includes(code || "")) {
     return Response.json({ error: "Database unavailable. Check DATABASE_URL in your deployment settings (see /api/health)." }, { status: 503 });
   }
+  if (err?.status === 503 || err?.status === 500) {
+    return Response.json(
+      { error: "Gemini is busy right now (Google reports high demand). Please try again in a minute." },
+      { status: 503 },
+    );
+  }
   if (err?.status === 429) {
     return Response.json(
       { error: "Gemini quota reached for this API key. Wait a minute and retry, or enable billing on the key in Google AI Studio." },

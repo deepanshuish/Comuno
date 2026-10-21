@@ -19,7 +19,7 @@ import type { Workspace } from "./types";
 export const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 export const PRO_MODEL = process.env.GEMINI_PRO_MODEL || DEFAULT_MODEL;
 const SEARCH_MODEL = process.env.GEMINI_SEARCH_MODEL;
-const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS || "gemini-2.5-flash,gemini-flash-latest").split(",").map((m) => m.trim()).filter(Boolean);
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS || "gemini-2.5-flash,gemini-flash-latest,gemini-flash-lite-latest").split(",").map((m) => m.trim()).filter(Boolean);
 
 export function geminiClient(workspace?: Pick<Workspace, "gemini_api_key"> | null) {
   const apiKey = workspace?.gemini_api_key || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -34,18 +34,30 @@ export function geminiClient(workspace?: Pick<Workspace, "gemini_api_key"> | nul
 
 export type Source = { title: string; url: string };
 
-/** generateContent with model fallback on quota (429) or unavailable-model (404) errors. */
+/**
+ * generateContent with retries and model fallback:
+ * - 503/500 (model overloaded, "high demand"): retry the same model once after a short pause,
+ *   then move on to the next model.
+ * - 429 (quota) or 404 (model unavailable for this key): move on to the next model.
+ */
 async function generate(ai: GoogleGenAI, params: GenerateContentParameters, search = false) {
   const first = (search && SEARCH_MODEL) || params.model;
   const models = [first, ...FALLBACK_MODELS.filter((m) => m !== first)];
   let lastErr: unknown;
   for (const model of models) {
-    try {
-      return await ai.models.generateContent({ ...params, model });
-    } catch (e) {
-      const status = (e as { status?: number }).status;
-      if (status !== 429 && status !== 404) throw e;
-      lastErr = e;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        return await ai.models.generateContent({ ...params, model });
+      } catch (e) {
+        const status = (e as { status?: number }).status;
+        lastErr = e;
+        if (status === 503 || status === 500) {
+          if (attempt === 0) await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
+          continue;
+        }
+        if (status === 429 || status === 404) break;
+        throw e;
+      }
     }
   }
   throw lastErr;
